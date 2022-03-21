@@ -25,7 +25,7 @@ class _EventInputState extends State<EventInput> {
   final _eventNameController = TextEditingController();
   final _eventDescription = TextEditingController();
   int _score = 0;
-  String _category = "timer";
+  String _category = "musculation";
   var nowDate = DateTime.now().toUtc();
 
   late FToast fToast;
@@ -45,6 +45,12 @@ class _EventInputState extends State<EventInput> {
       editValue();
     }
   }
+
+  static const List<String> _kOptions = <String>[
+    'aardvark',
+    'bobcat',
+    'chameleon',
+  ];
 
   editValue() async {
     setState(() {
@@ -142,6 +148,8 @@ class _EventInputState extends State<EventInput> {
                     _event.name = _eventNameController.text;
                     _event.description = _eventDescription.text;
                     _event.datetime = nowDate.millisecondsSinceEpoch;
+                    _event.category = _category;
+                    _event.score = _score;
                     await _eventService.saveEvent(_event);
                     _showToast("Event created");
                     Navigator.pop(context);
@@ -223,6 +231,9 @@ class _EventInputState extends State<EventInput> {
                         ),
                         borderRadius: BorderRadius.circular(20.0)),
                   ),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 TextFormField(
                   validator: (value) {

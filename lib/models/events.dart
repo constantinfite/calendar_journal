@@ -15,6 +15,7 @@ class Event {
     mapping['description'] = description;
     mapping['datetime'] = datetime;
     mapping['score'] = score;
+    mapping['category'] = category;
 
     return mapping;
   }

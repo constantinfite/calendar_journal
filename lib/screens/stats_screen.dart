@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
-import 'package:calendar_journal/screens/input_exercice_screen.dart';
+import 'package:calendar_journal/screens/input_event_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/events.dart';
@@ -65,7 +66,7 @@ class _StatsScreenState extends State<StatsScreen> {
         eventModel.id = event['id'];
         eventModel.name = event['name'];
         eventModel.description = event['description'];
-        eventModel.category = event['mode'];
+        eventModel.category = event['category'];
         eventModel.score = event['score'];
         eventModel.datetime = event['datetime'];
         _eventList.add(eventModel);
@@ -79,7 +80,6 @@ class _StatsScreenState extends State<StatsScreen> {
     Map<DateTime, List<Event>> mapFetch = {};
     List<Event> event = await getAllEvents();
     for (int i = 0; i < event.length; i++) {
-      print(event.length);
       var date = DateTime.fromMillisecondsSinceEpoch(event[i].datetime!);
       var createDate = DateTime.utc(date.year, date.month, date.day);
       /*print("createDate");
@@ -107,6 +107,14 @@ class _StatsScreenState extends State<StatsScreen> {
 
       _selectedEvents = _getEventsFromDay(selectedDay);
     }
+  }
+
+  List<Event> myList() {
+    var seen = Set<String>();
+    List<Event> uniquelist =
+        _eventList.where((event) => seen.add(event.category!)).toList();
+
+    return uniquelist;
   }
 
   @override
@@ -232,11 +240,28 @@ class _StatsScreenState extends State<StatsScreen> {
             SizedBox(
               height: 20,
             ),
+            Row(children: [
+              Expanded(
+                child: Container(
+                  height: 50.0,
+                  color: Colors.transparent,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: myList().length,
+                      itemBuilder: (context, index) {
+                        return buildCategory(index: index);
+                      }),
+                ),
+              ),
+            ]),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
                 child: ListView.builder(
                     itemCount: _selectedEvents.length,
                     itemBuilder: (context, index) {
-                      return cardExercice(_selectedEvents[index]);
+                      return cardEvent(_selectedEvents[index]);
                     }))
           ],
         ),
@@ -256,7 +281,41 @@ class _StatsScreenState extends State<StatsScreen> {
         ));
   }
 
-  Widget cardExercice(event) {
+  Widget buildCategory({required index}) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+      child: SizedBox(
+        width: 120,
+        child: GestureDetector(
+          onTap: () async {
+            HapticFeedback.mediumImpact();
+
+            setState(() {});
+          },
+          child: Card(
+            margin: EdgeInsets.zero,
+            color: AppTheme.colors.redColor,
+            shape: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.transparent)),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(myList()[index].category!,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontFamily: 'BalooBhai',
+                      )),
+                ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget cardEvent(event) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
