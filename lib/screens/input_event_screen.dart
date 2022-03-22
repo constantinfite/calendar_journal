@@ -5,6 +5,8 @@ import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:calendar_journal/services/event_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:calendar_journal/presentation/icons.dart';
+import 'package:calendar_journal/services/category_service.dart';
+import 'package:calendar_journal/models/category.dart';
 
 class EventInput extends StatefulWidget {
   const EventInput(
@@ -25,7 +27,7 @@ class _EventInputState extends State<EventInput> {
   final _eventNameController = TextEditingController();
   final _eventDescription = TextEditingController();
   int _score = 0;
-  String _category = "musculation";
+  String _category = "One";
   var nowDate = DateTime.now().toUtc();
 
   late FToast fToast;
@@ -35,9 +37,15 @@ class _EventInputState extends State<EventInput> {
   final _event = Event();
   final _eventService = EventService();
 
+  List<Category> _categoryList = <Category>[];
+  final _categoryService = CategoryService();
+
+  List<String> nameList = <String>[];
+
   @override
   void initState() {
     super.initState();
+    getAllCategories();
     fToast = FToast();
     fToast.init(context);
 
@@ -46,12 +54,6 @@ class _EventInputState extends State<EventInput> {
     }
   }
 
-  static const List<String> _kOptions = <String>[
-    'aardvark',
-    'bobcat',
-    'chameleon',
-  ];
-
   editValue() async {
     setState(() {
       id = widget.event.id!;
@@ -59,6 +61,21 @@ class _EventInputState extends State<EventInput> {
       _eventDescription.text = widget.event.description!;
       _score = widget.event.score!;
       _category = widget.event.category!;
+    });
+  }
+
+  getAllCategories() async {
+    _categoryList = <Category>[];
+    var categories = await _categoryService.readCategories();
+    categories.forEach((category) {
+      setState(() {
+        var categoryModel = Category();
+        categoryModel.name = category['name'];
+        categoryModel.id = category['id'];
+        _categoryList.add(categoryModel);
+        nameList.add(category['name']);
+        _category = nameList[0];
+      });
     });
   }
 
@@ -266,6 +283,21 @@ class _EventInputState extends State<EventInput> {
                 ),
                 SizedBox(
                   height: 20,
+                ),
+                DropdownButtonFormField(
+                  value: _category,
+                  items: nameList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  hint: Text('Category'),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _category = value!;
+                    });
+                  },
                 ),
               ]),
             ),

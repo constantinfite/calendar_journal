@@ -9,6 +9,8 @@ import 'package:calendar_journal/services/event_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:calendar_journal/services/category_service.dart';
+import 'package:calendar_journal/models/category.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
+  List<Category> _categoryList = <Category>[];
+  final _categoryService = CategoryService();
   late var _event = Event();
 
   List<Event> _selectedEvents = <Event>[];
@@ -42,6 +46,7 @@ class _StatsScreenState extends State<StatsScreen> {
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
+    getAllCategories();
 
     getTask1().then((val) => setState(() {
           _events = val;
@@ -56,6 +61,19 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  getAllCategories() async {
+    _categoryList = <Category>[];
+    var categories = await _categoryService.readCategories();
+    categories.forEach((category) {
+      setState(() {
+        var categoryModel = Category();
+        categoryModel.name = category['name'];
+        categoryModel.id = category['id'];
+        _categoryList.add(categoryModel);
+      });
+    });
   }
 
   Future<List<Event>> getAllEvents() async {
@@ -107,14 +125,6 @@ class _StatsScreenState extends State<StatsScreen> {
 
       _selectedEvents = _getEventsFromDay(selectedDay);
     }
-  }
-
-  List<Event> myList() {
-    var seen = Set<String>();
-    List<Event> uniquelist =
-        _eventList.where((event) => seen.add(event.category!)).toList();
-
-    return uniquelist;
   }
 
   @override
@@ -247,7 +257,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   color: Colors.transparent,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: myList().length,
+                      itemCount: _categoryList.length,
                       itemBuilder: (context, index) {
                         return buildCategory(index: index);
                       }),
@@ -302,7 +312,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(myList()[index].category!,
+                  Text(_categoryList[index].name!,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white,

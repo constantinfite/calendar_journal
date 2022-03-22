@@ -3,17 +3,17 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DataBaseConnection {
-  setDatabaseExercice() async {
+  setDatabaseCategory() async {
     var directory = await getApplicationDocumentsDirectory();
-    var path = join(directory.path, 'db_exercicelist_sqflite');
+    var path = join(directory.path, 'db_categorylist_sqflite');
     var database = await openDatabase(path,
-        version: 1, onCreate: _onCreatingDatabaseExercice);
+        version: 1, onCreate: _onCreatingDatabaseCategory);
     return database;
   }
 
-  _onCreatingDatabaseExercice(Database database, int version) async {
+  _onCreatingDatabaseCategory(Database database, int version) async {
     await database.execute(
-        "CREATE TABLE exercices(id INTEGER PRIMARY KEY, name TEXT, serie INTEGER, repetition INTEGER, resttime INTEGER, exercicetime INTEGER, mode TEXT, color INTEGER, preparationtime INTEGER)");
+        "CREATE TABLE categories(id INTEGER PRIMARY KEY, name TEXT, color INTEGER)");
   }
 
   setDatabaseEvent() async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/presentation/icons.dart';
-
+import 'package:calendar_journal/helpers/drawer_navigation.dart';
 import 'package:calendar_journal/screens/stats_screen.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:calendar_journal/screens/list_exercice_screen.dart';
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: screens[_selectedIndex],
       //drawer: const DrawerNavigation(),
-
+      drawer: DrawerNavigaton(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
