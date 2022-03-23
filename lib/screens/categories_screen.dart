@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:calendar_journal/screens/home_screen.dart';
 import 'package:calendar_journal/services/category_service.dart';
+import 'package:calendar_journal/screens/input_category.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -50,46 +50,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       _editCategoryNameController.text = category[0]['name'] ?? 'No Name';
     });
     _editFormDialog(context);
-  }
-
-  _showFormDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (param) {
-          return AlertDialog(
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  _category.name = _categoryNameController.text;
-
-                  var result = await _categoryService.saveCategory(_category);
-                  if (result > 0) {
-                    Navigator.pop(context);
-                    getAllCategories();
-                  }
-                },
-                child: Text('Save'),
-              ),
-            ],
-            title: Text('Categories Form'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: _categoryNameController,
-                    decoration: InputDecoration(
-                        hintText: 'Write a category', labelText: 'Category'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 
   _editFormDialog(BuildContext context) {
@@ -212,9 +172,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             );
           }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showFormDialog(context);
-        },
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(
+                builder: (context) => CategoryInput(
+                      creation: true,
+                    )))
+            .then((_) {
+          getAllCategories();
+        }),
         child: Icon(Icons.add),
       ),
     );

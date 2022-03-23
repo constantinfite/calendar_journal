@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/presentation/icons.dart';
 import 'package:calendar_journal/helpers/drawer_navigation.dart';
-import 'package:calendar_journal/screens/stats_screen.dart';
+import 'package:calendar_journal/screens/calendar.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:calendar_journal/screens/list_exercice_screen.dart';
 
@@ -56,25 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colors.redColor,
       appBar: AppBar(
-        toolbarHeight: 100,
+        iconTheme: IconThemeData(color: AppTheme.colors.redColor),
         elevation: 0,
         backgroundColor: AppTheme.colors.backgroundColor,
-        title: Text(
-          _title,
-          style: TextStyle(
-            color: AppTheme.colors.secondaryColor,
-            fontSize: 35,
-            fontFamily: 'BalooBhai',
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Icon(Icons.more_vert),
-        ],
-        actionsIconTheme: IconThemeData(
-          color: AppTheme.colors.secondaryColor,
-          size: 36,
-        ),
       ),
       body: screens[_selectedIndex],
       //drawer: const DrawerNavigation(),

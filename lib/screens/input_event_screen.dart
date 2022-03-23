@@ -72,6 +72,7 @@ class _EventInputState extends State<EventInput> {
         var categoryModel = Category();
         categoryModel.name = category['name'];
         categoryModel.id = category['id'];
+        categoryModel.color = category['color'];
         _categoryList.add(categoryModel);
         nameList.add(category['name']);
         _category = nameList[0];

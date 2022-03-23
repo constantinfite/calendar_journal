@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:calendar_journal/screens/input_event_screen.dart';
+import 'package:calendar_journal/src/app.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -20,32 +21,40 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
-  List<Category> _categoryList = <Category>[];
-  final _categoryService = CategoryService();
-  late var _event = Event();
-
-  List<Event> _selectedEvents = <Event>[];
-
-  final List<Event> _eventList = <Event>[];
-  final _eventService = EventService();
-
   CalendarFormat format = CalendarFormat.month;
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
+  final _categoryService = CategoryService();
+  final _eventService = EventService();
+
+  final _event = Event();
+  List<Event> _selectedEvents = <Event>[];
+
   Map<DateTime, List<Event>> _events = LinkedHashMap(
     equals: isSameDay,
   );
 
+  List<Category> _categoryList = <Category>[];
+  late var _categorySelected = Category();
+
   List<Event> _getEventsFromDay(DateTime date) {
-    return _events[date] ?? [];
+    if (_categorySelected.name == "All") {
+      return _events[date] ?? [];
+    } else {
+      return (_events[date]
+              ?.where((i) => i.category == _categorySelected.name)
+              .toList()) ??
+          [];
+    }
   }
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
+
     getAllCategories();
 
     getTask1().then((val) => setState(() {
@@ -55,6 +64,11 @@ class _StatsScreenState extends State<StatsScreen> {
               _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
 
           _selectedEvents = _getEventsFromDay(_correctDate);
+          if (_categorySelected.name != "All") {
+            _selectedEvents = _selectedEvents
+                .where((i) => i.category == _categorySelected.name)
+                .toList();
+          }
         }));
   }
 
@@ -66,18 +80,26 @@ class _StatsScreenState extends State<StatsScreen> {
   getAllCategories() async {
     _categoryList = <Category>[];
     var categories = await _categoryService.readCategories();
+    var categoryModel = Category();
+    categoryModel.name = "All";
+    categoryModel.id = 0;
+    categoryModel.color = AppTheme.colors.secondaryColor.value;
+    _categoryList.add(categoryModel);
     categories.forEach((category) {
       setState(() {
         var categoryModel = Category();
         categoryModel.name = category['name'];
         categoryModel.id = category['id'];
+        categoryModel.color = category['color'];
         _categoryList.add(categoryModel);
       });
     });
+    _categorySelected = _categoryList[0];
   }
 
   Future<List<Event>> getAllEvents() async {
     var events = await _eventService.readEvents();
+    List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {
         var eventModel = Event();
@@ -90,15 +112,15 @@ class _StatsScreenState extends State<StatsScreen> {
         _eventList.add(eventModel);
       });
     });
-
+    //print(_eventList.length);
     return _eventList;
   }
 
   Future<Map<DateTime, List<Event>>> getTask1() async {
     Map<DateTime, List<Event>> mapFetch = {};
-    List<Event> event = await getAllEvents();
-    for (int i = 0; i < event.length; i++) {
-      var date = DateTime.fromMillisecondsSinceEpoch(event[i].datetime!);
+    List<Event> events = await getAllEvents();
+    for (int i = 0; i < events.length; i++) {
+      var date = DateTime.fromMillisecondsSinceEpoch(events[i].datetime!);
       var createDate = DateTime.utc(date.year, date.month, date.day);
       /*print("createDate");
       print(createDate);*/
@@ -106,11 +128,9 @@ class _StatsScreenState extends State<StatsScreen> {
       var original = mapFetch[createDate];
 
       if (original == null) {
-        //print("null");
-        mapFetch[createDate] = [event[i]];
+        mapFetch[createDate] = [events[i]];
       } else {
-        //print(event[i]);
-        mapFetch[createDate] = List.from(original)..addAll([event[i]]);
+        mapFetch[createDate] = List.from(original)..addAll([events[i]]);
       }
     }
     return mapFetch;
@@ -134,22 +154,27 @@ class _StatsScreenState extends State<StatsScreen> {
         body: Column(
           children: [
             //Text(createDate),
+            Row(children: [
+              Expanded(
+                child: Container(
+                  height: 50.0,
+                  color: Colors.transparent,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _categoryList.length,
+                      itemBuilder: (context, index) {
+                        return buildCategory(index: index);
+                      }),
+                ),
+              ),
+            ]),
+
             Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6),
-                /*gradient: LinearGradient(colors: [
-                  AppTheme.colors.blueColor,
-                  AppTheme.colors.redColor
-                ]),*/
-                /*boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 5,
-                      offset: new Offset(0.0, 5))
-                ]*/
               ),
               child: TableCalendar(
                 focusedDay: _selectedDay!,
@@ -170,8 +195,8 @@ class _StatsScreenState extends State<StatsScreen> {
                       margin: const EdgeInsets.all(0.5),
                       decoration: BoxDecoration(
                         // provide your own condition here
-                        color: event.category == "rep"
-                            ? AppTheme.colors.secondaryColor
+                        color: event.category! == _categorySelected.name
+                            ? Color(_categorySelected.color!)
                             : AppTheme.colors.secondaryColor,
                         shape: BoxShape.circle,
                       ),
@@ -247,26 +272,7 @@ class _StatsScreenState extends State<StatsScreen> {
             ),
             /* ..._getEventsFromDay(selectedDay)
               .map((Event event) => cardExercice(event)),*/
-            SizedBox(
-              height: 20,
-            ),
-            Row(children: [
-              Expanded(
-                child: Container(
-                  height: 50.0,
-                  color: Colors.transparent,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _categoryList.length,
-                      itemBuilder: (context, index) {
-                        return buildCategory(index: index);
-                      }),
-                ),
-              ),
-            ]),
-            SizedBox(
-              height: 20,
-            ),
+
             Expanded(
                 child: ListView.builder(
                     itemCount: _selectedEvents.length,
@@ -286,41 +292,67 @@ class _StatsScreenState extends State<StatsScreen> {
                   builder: (context) =>
                       EventInput(mode: "", creation: true, event: _event)))
               .then((_) {
-            getAllEvents();
+            getTask1().then((val) => setState(() {
+                  _events = val;
+
+                  var _correctDate = DateTime.utc(_selectedDay!.year,
+                      _selectedDay!.month, _selectedDay!.day);
+
+                  _selectedEvents = _getEventsFromDay(_correctDate);
+                  if (_categorySelected.name != "All") {
+                    _selectedEvents = _selectedEvents
+                        .where((i) => i.category == _categorySelected.name)
+                        .toList();
+                  }
+                }));
           }),
         ));
   }
 
   Widget buildCategory({required index}) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-      child: SizedBox(
-        width: 120,
-        child: GestureDetector(
-          onTap: () async {
-            HapticFeedback.mediumImpact();
+    return GestureDetector(
+      onTap: () async {
+        HapticFeedback.mediumImpact();
 
-            setState(() {});
-          },
-          child: Card(
-            margin: EdgeInsets.zero,
-            color: AppTheme.colors.redColor,
-            shape: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Colors.transparent)),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(_categoryList[index].name!,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontFamily: 'BalooBhai',
-                      )),
-                ]),
-          ),
-        ),
+        setState(() {
+          _categorySelected = _categoryList[index];
+
+          var _correctDate = DateTime.utc(
+              _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+
+          _selectedEvents = _getEventsFromDay(_correctDate);
+
+          if (_categorySelected.name != "All") {
+            _selectedEvents = _selectedEvents
+                .where((i) => i.category == _categorySelected.name)
+                .toList();
+          }
+        });
+      },
+      child: Card(
+        color: _categoryList[index].name! == _categorySelected.name
+            ? Color(_categorySelected.color!)
+            : Colors.white,
+        shape: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(color: Colors.transparent)),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                child: Text(_categoryList[index].name!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color:
+                          _categorySelected.name == _categoryList[index].name!
+                              ? Colors.white
+                              : AppTheme.colors.secondaryColor,
+                      fontFamily: 'BalooBhai',
+                    )),
+              ),
+            ]),
       ),
     );
   }
@@ -349,7 +381,7 @@ class _StatsScreenState extends State<StatsScreen> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: ListTile(
-              title: SizedBox(
+              leading: SizedBox(
                 width: 50,
                 child: Text(
                   event.name,
@@ -359,10 +391,20 @@ class _StatsScreenState extends State<StatsScreen> {
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'BalooBhai',
-                      color: AppTheme.colors.greenColor),
+                      color: AppTheme.colors.secondaryColor),
                 ),
               ),
-              subtitle: SizedBox(
+              trailing: Text(
+                event.category,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'BalooBhai',
+                    color: AppTheme.colors.secondaryColor),
+              ),
+              title: SizedBox(
                 width: 100,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,

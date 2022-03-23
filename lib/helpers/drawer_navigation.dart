@@ -1,6 +1,6 @@
 import 'package:calendar_journal/models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:calendar_journal/screens/stats_screen.dart';
+import 'package:calendar_journal/screens/calendar.dart';
 import 'package:calendar_journal/screens/home_screen.dart';
 import 'package:calendar_journal/screens/categories_screen.dart';
 import 'package:calendar_journal/services/category_service.dart';

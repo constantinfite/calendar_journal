@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
-import '../screens/stats_screen.dart';
+import '../screens/calendar.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
