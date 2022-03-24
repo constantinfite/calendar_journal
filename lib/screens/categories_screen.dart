@@ -1,8 +1,10 @@
+import 'package:calendar_journal/main.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:calendar_journal/screens/home_screen.dart';
 import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/screens/input_category.dart';
+import 'package:calendar_journal/presentation/app_theme.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -99,18 +101,28 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _globalKey,
+      backgroundColor: AppTheme.colors.backgroundColor,
       appBar: AppBar(
-        leading: RaisedButton(
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => HomeScreen())),
-          elevation: 0.0,
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
+        iconTheme: IconThemeData(color: AppTheme.colors.redColor),
+        toolbarHeight: 100,
+        elevation: 0,
+        backgroundColor: AppTheme.colors.backgroundColor,
+        title: Text(
+          "Categories",
+          style: TextStyle(
+            color: AppTheme.colors.secondaryColor,
+            fontSize: 35,
+            fontFamily: 'BalooBhai',
           ),
-          color: Colors.blue,
         ),
-        title: Text('Categories'),
+        centerTitle: true,
+        actions: [
+          Icon(Icons.more_vert),
+        ],
+        actionsIconTheme: IconThemeData(
+          color: AppTheme.colors.secondaryColor,
+          size: 36,
+        ),
       ),
       body: ListView.builder(
           itemCount: _categoryList.length,
@@ -118,27 +130,52 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             return Padding(
               padding: EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
               child: Card(
-                elevation: 8.0,
+                elevation: 2.0,
                 child: ListTile(
-                  leading: IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        _editCategory(context, _categoryList[index].id);
-                      }),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(_categoryList[index].name!),
-                      IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            _deleteFormDialog(context, _categoryList[index].id);
-                          })
-                    ],
+                  leading: Text(
+                    _categoryList[index].emoji!,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'BalooBhai2',
+                      color: AppTheme.colors.secondaryColor,
+                    ),
                   ),
+                  title: Text(
+                    (_categoryList[index].name!),
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'BalooBhai',
+                        color: AppTheme.colors.secondaryColor),
+                  ),
+                  trailing: SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              _deleteFormDialog(
+                                  context, _categoryList[index].id);
+                            }),
+                        IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              _editCategory(context, _categoryList[index].id);
+                            })
+                      ],
+                    ),
+                  ),
+                  /**/
                 ),
               ),
             );

@@ -422,7 +422,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 maxLines: 1,
                 softWrap: false,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 25,
                   fontFamily: 'BalooBhai2',
                   color: AppTheme.colors.secondaryColor,
                 ),
