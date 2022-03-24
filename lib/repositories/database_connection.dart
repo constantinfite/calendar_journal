@@ -13,7 +13,7 @@ class DataBaseConnection {
 
   _onCreatingDatabaseCategory(Database database, int version) async {
     await database.execute(
-        "CREATE TABLE categories(id INTEGER PRIMARY KEY, name TEXT, color INTEGER)");
+        "CREATE TABLE categories(id INTEGER PRIMARY KEY, name TEXT, color INTEGER, emoji TEXT)");
   }
 
   setDatabaseEvent() async {

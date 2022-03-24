@@ -35,17 +35,12 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
       child: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('Abdul Aziz Ahwan'),
-              accountEmail: Text('admin@abdulazizahwan'),
-              decoration: BoxDecoration(color: Colors.blue),
-            ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => HomeScreen())),
-            ),
+                leading: Icon(Icons.home),
+                title: Text('Home'),
+                onTap: () => Navigator.pop(context)
+                //Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen())),
+                ),
             ListTile(
               leading: Icon(Icons.view_list),
               title: Text('Categories'),

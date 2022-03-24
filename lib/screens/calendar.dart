@@ -77,6 +77,16 @@ class _StatsScreenState extends State<StatsScreen> {
     super.dispose();
   }
 
+  String emojiCategory(category) {
+    String emoji = "";
+    for (var cat in _categoryList) {
+      if (cat.name == category) {
+        emoji = cat.emoji!;
+      }
+    }
+    return emoji;
+  }
+
   getAllCategories() async {
     _categoryList = <Category>[];
     var categories = await _categoryService.readCategories();
@@ -89,6 +99,7 @@ class _StatsScreenState extends State<StatsScreen> {
       setState(() {
         var categoryModel = Category();
         categoryModel.name = category['name'];
+        categoryModel.emoji = category['emoji'];
         categoryModel.id = category['id'];
         categoryModel.color = category['color'];
         _categoryList.add(categoryModel);
@@ -154,20 +165,6 @@ class _StatsScreenState extends State<StatsScreen> {
         body: Column(
           children: [
             //Text(createDate),
-            Row(children: [
-              Expanded(
-                child: Container(
-                  height: 50.0,
-                  color: Colors.transparent,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _categoryList.length,
-                      itemBuilder: (context, index) {
-                        return buildCategory(index: index);
-                      }),
-                ),
-              ),
-            ]),
 
             Container(
               margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -240,7 +237,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   selectedTextStyle:
-                      TextStyle(color: Color.fromARGB(255, 231, 231, 231)),
+                      TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                   todayDecoration: BoxDecoration(
                     color: AppTheme.colors.greenColor,
                     shape: BoxShape.rectangle,
@@ -272,13 +269,29 @@ class _StatsScreenState extends State<StatsScreen> {
             ),
             /* ..._getEventsFromDay(selectedDay)
               .map((Event event) => cardExercice(event)),*/
-
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              child: Row(children: [
+                Expanded(
+                  child: Container(
+                    height: 50.0,
+                    color: Colors.transparent,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _categoryList.length,
+                        itemBuilder: (context, index) {
+                          return buildCategory(index: index);
+                        }),
+                  ),
+                ),
+              ]),
+            ),
             Expanded(
                 child: ListView.builder(
                     itemCount: _selectedEvents.length,
                     itemBuilder: (context, index) {
                       return cardEvent(_selectedEvents[index]);
-                    }))
+                    })),
           ],
         ),
         floatingActionButton: SpeedDial(
@@ -331,7 +344,8 @@ class _StatsScreenState extends State<StatsScreen> {
       },
       child: Card(
         color: _categoryList[index].name! == _categorySelected.name
-            ? Color(_categorySelected.color!)
+            ? AppTheme.colors.redColor
+            //Color(_categorySelected.color!)
             : Colors.white,
         shape: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -381,21 +395,8 @@ class _StatsScreenState extends State<StatsScreen> {
           child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: ListTile(
-              leading: SizedBox(
-                width: 50,
-                child: Text(
-                  event.name,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'BalooBhai',
-                      color: AppTheme.colors.secondaryColor),
-                ),
-              ),
-              trailing: Text(
-                event.category,
+              title: Text(
+                event.name,
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
@@ -404,23 +405,26 @@ class _StatsScreenState extends State<StatsScreen> {
                     fontFamily: 'BalooBhai',
                     color: AppTheme.colors.secondaryColor),
               ),
-              title: SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      datesecondToMinuteHour(event.datetime),
-                      overflow: TextOverflow.fade,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
-                        color: AppTheme.colors.redColor,
-                      ),
-                    ),
-                  ],
+              trailing: Text(
+                datesecondToMinuteHour(event.datetime),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'BalooBhai2',
+                  color: AppTheme.colors.secondaryColor,
+                ),
+              ),
+              leading: Text(
+                emojiCategory(event.category),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'BalooBhai2',
+                  color: AppTheme.colors.secondaryColor,
                 ),
               ),
             ),

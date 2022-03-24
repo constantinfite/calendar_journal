@@ -6,11 +6,11 @@ import 'package:calendar_journal/models/category.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class CategoryInput extends StatefulWidget {
-  const CategoryInput({
-    Key? key,
-    required this.creation,
-  }) : super(key: key);
+  const CategoryInput(
+      {Key? key, required this.creation, required this.category})
+      : super(key: key);
   final bool creation;
+  final Category category;
   @override
   State<CategoryInput> createState() => _CategoryInputState();
 }
@@ -18,6 +18,7 @@ class CategoryInput extends StatefulWidget {
 class _CategoryInputState extends State<CategoryInput> {
   int id = 0;
   final _categoryNameController = TextEditingController();
+  final _categoryEmojiController = TextEditingController();
   Color _color = Colors.blue;
 
   late FToast fToast;
@@ -32,6 +33,19 @@ class _CategoryInputState extends State<CategoryInput> {
 
     fToast = FToast();
     fToast.init(context);
+
+    if (!widget.creation) {
+      editValue();
+    }
+  }
+
+  editValue() async {
+    setState(() {
+      id = widget.category.id!;
+      _categoryNameController.text = widget.category.name!;
+      _categoryEmojiController.text = widget.category.emoji!;
+      _color = Color(widget.category.color!);
+    });
   }
 
   _showToast(_text) {
@@ -118,8 +132,9 @@ class _CategoryInputState extends State<CategoryInput> {
                   if (_categoryNameController.text != null) {
                     final _category = Category();
                     _category.name = _categoryNameController.text;
+                    _category.emoji = _categoryEmojiController.text;
                     _category.color = _color.value;
-
+                    print(_category.emoji);
                     await _categoryService.saveCategory(_category);
 
                     _showToast("Event created");
@@ -129,15 +144,14 @@ class _CategoryInputState extends State<CategoryInput> {
                     _showToast("Empty value");
                   }
                 }
-                // modification of exercice
+                // modification of category
                 else {
-                  if (_formKey.currentState!.validate()
-                      //&& _preparationTime != 0
-                      ) {
+                  if (_formKey.currentState!.validate()) {
                     final _category = Category();
                     _category.name = _categoryNameController.text;
+                    _category.emoji = _categoryEmojiController.text;
                     _category.color = _color.value;
-
+                    _category.id = id;
                     await _categoryService.updateCategory(_category);
                     Navigator.pop(context);
                     _showToast("Category modified");
@@ -175,6 +189,36 @@ class _CategoryInputState extends State<CategoryInput> {
                   controller: _categoryNameController,
                   decoration: InputDecoration(
                     hintText: 'Enter title',
+                    filled: true,
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 0.0,
+                        ),
+                        borderRadius: BorderRadius.circular(20.0)),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '';
+                    }
+                    return null;
+                  },
+                  style: TextStyle(
+                    color: AppTheme.colors.secondaryColor,
+                    fontSize: 20,
+                    fontFamily: 'BalooBhai',
+                  ),
+                  controller: _categoryEmojiController,
+                  decoration: InputDecoration(
+                    hintText: 'Choici emoji',
                     filled: true,
                     fillColor: Colors.white,
                     focusedBorder: OutlineInputBorder(

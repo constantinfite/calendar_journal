@@ -13,12 +13,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   final _categoryNameController = TextEditingController();
   final _categoryDescriptionController = TextEditingController();
 
-  final _category = Category();
+  var _category = Category();
+  var category;
   final _categoryService = CategoryService();
 
   List<Category> _categoryList = <Category>[];
-
-  var category;
 
   final _editCategoryNameController = TextEditingController();
   final _editCategoryDescriptionController = TextEditingController();
@@ -38,6 +37,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       setState(() {
         var categoryModel = Category();
         categoryModel.name = category['name'];
+        categoryModel.emoji = category['emoji'];
         categoryModel.id = category['id'];
         _categoryList.add(categoryModel);
       });
@@ -46,51 +46,23 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   _editCategory(BuildContext context, categoryId) async {
     category = await _categoryService.readCategoryById(categoryId);
+
     setState(() {
-      _editCategoryNameController.text = category[0]['name'] ?? 'No Name';
+      _category.id = category[0]['id'];
+      _category.name = category[0]['name'] ?? 'No name';
+      _category.emoji = category[0]['emoji'] ?? 'No emoji';
+      _category.color = category[0]['color'] ?? 0;
     });
-    _editFormDialog(context);
-  }
 
-  _editFormDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (param) {
-          return AlertDialog(
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  _category.id = category[0]['id'];
-                  _category.name = _editCategoryNameController.text;
-
-                  var result = await _categoryService.updateCategory(_category);
-                  if (result > 0) {
-                    Navigator.pop(context);
-                    getAllCategories();
-                  }
-                },
-                child: Text('Update'),
-              ),
-            ],
-            title: Text('Edit Categories Form'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: _editCategoryNameController,
-                    decoration: InputDecoration(
-                        hintText: 'Write a category', labelText: 'Category'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => CategoryInput(
+                  creation: false,
+                  category: _category,
+                )))
+        .then((_) {
+      getAllCategories();
+    });
   }
 
   _deleteFormDialog(BuildContext context, categoryId) {
@@ -175,6 +147,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         onPressed: () => Navigator.of(context)
             .push(MaterialPageRoute(
                 builder: (context) => CategoryInput(
+                      category: _category,
                       creation: true,
                     )))
             .then((_) {
