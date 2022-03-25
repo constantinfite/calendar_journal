@@ -54,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.colors.redColor,
+      backgroundColor: AppTheme.colors.greenColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppTheme.colors.redColor),
+        iconTheme: IconThemeData(color: AppTheme.colors.secondaryColor),
         elevation: 0,
         backgroundColor: AppTheme.colors.backgroundColor,
       ),
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: AppTheme.colors.redColor,
+        selectedItemColor: AppTheme.colors.greenColor,
         onTap: (int index) {
           _onItemTapped(index);
         },

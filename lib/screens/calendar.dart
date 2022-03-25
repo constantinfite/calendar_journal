@@ -77,8 +77,19 @@ class _StatsScreenState extends State<StatsScreen> {
     super.dispose();
   }
 
+  Color colorCategory(category) {
+    Color color = Colors.blue;
+    for (var cat in _categoryList) {
+      if (cat.name == category) {
+        color = Color(cat.color!);
+      }
+    }
+    return color;
+  }
+
   String emojiCategory(category) {
     String emoji = "";
+
     for (var cat in _categoryList) {
       if (cat.name == category) {
         emoji = cat.emoji!;
@@ -194,13 +205,13 @@ class _StatsScreenState extends State<StatsScreen> {
                         // provide your own condition here
                         color: event.category! == _categorySelected.name
                             ? Color(_categorySelected.color!)
-                            : AppTheme.colors.secondaryColor,
+                            : colorCategory(event.category),
                         shape: BoxShape.circle,
                       ),
                     );
                   },
                   dowBuilder: (context, day) {
-                    if (day.weekday == DateTime.sunday) {
+                    /*if (day.weekday == DateTime.sunday) {
                       final text = DateFormat.E().format(day);
 
                       return Center(
@@ -209,7 +220,7 @@ class _StatsScreenState extends State<StatsScreen> {
                           style: TextStyle(color: Colors.red),
                         ),
                       );
-                    }
+                    }*/
                   },
                 ),
                 startingDayOfWeek: StartingDayOfWeek.monday,
@@ -232,14 +243,14 @@ class _StatsScreenState extends State<StatsScreen> {
                 calendarStyle: CalendarStyle(
                   isTodayHighlighted: true,
                   selectedDecoration: BoxDecoration(
-                    color: AppTheme.colors.redColor,
+                    color: AppTheme.colors.greenColor,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   selectedTextStyle:
                       TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                   todayDecoration: BoxDecoration(
-                    color: AppTheme.colors.greenColor,
+                    color: Color.fromARGB(255, 212, 212, 212),
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -258,7 +269,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   titleCentered: true,
                   formatButtonShowsNext: false,
                   formatButtonDecoration: BoxDecoration(
-                    color: AppTheme.colors.redColor,
+                    color: AppTheme.colors.greenColor,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   formatButtonTextStyle: TextStyle(
@@ -297,7 +308,7 @@ class _StatsScreenState extends State<StatsScreen> {
         floatingActionButton: SpeedDial(
           icon: Icons.add,
           activeIcon: Icons.close,
-          backgroundColor: AppTheme.colors.redColor,
+          backgroundColor: AppTheme.colors.greenColor,
           spacing: 15,
           spaceBetweenChildren: 10,
           onPress: () => Navigator.of(context)
@@ -344,7 +355,7 @@ class _StatsScreenState extends State<StatsScreen> {
       },
       child: Card(
         color: _categoryList[index].name! == _categorySelected.name
-            ? AppTheme.colors.redColor
+            ? AppTheme.colors.secondaryColor
             //Color(_categorySelected.color!)
             : Colors.white,
         shape: OutlineInputBorder(
@@ -416,15 +427,25 @@ class _StatsScreenState extends State<StatsScreen> {
                   color: AppTheme.colors.secondaryColor,
                 ),
               ),
-              leading: Text(
-                emojiCategory(event.category),
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontFamily: 'BalooBhai2',
-                  color: AppTheme.colors.secondaryColor,
+              leading: Container(
+                alignment: Alignment.center,
+                //transformAlignment: transf,
+                width: 50.0,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 235, 235, 235),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  emojiCategory(event.category),
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontFamily: 'BalooBhai2',
+                    color: AppTheme.colors.secondaryColor,
+                  ),
                 ),
               ),
             ),
@@ -475,7 +496,7 @@ class _StatsScreenState extends State<StatsScreen> {
                         style: TextStyle(
                             fontSize: 15,
                             fontFamily: 'BalooBhai',
-                            color: AppTheme.colors.redColor),
+                            color: AppTheme.colors.greenColor),
                       ),
                     ],
                   ),

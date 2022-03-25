@@ -103,7 +103,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       key: _globalKey,
       backgroundColor: AppTheme.colors.backgroundColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppTheme.colors.redColor),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: AppTheme.colors.secondaryColor),
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => HomeScreen()))),
         toolbarHeight: 100,
         elevation: 0,
         backgroundColor: AppTheme.colors.backgroundColor,
@@ -181,17 +184,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             );
           }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context)
-            .push(MaterialPageRoute(
-                builder: (context) => CategoryInput(
-                      category: _category,
-                      creation: true,
-                    )))
-            .then((_) {
-          getAllCategories();
-        }),
-        child: Icon(Icons.add),
-      ),
+          onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(
+                      builder: (context) => CategoryInput(
+                            category: _category,
+                            creation: true,
+                          )))
+                  .then((_) {
+                getAllCategories();
+              }),
+          child: Icon(Icons.add),
+          backgroundColor: AppTheme.colors.greenColor),
     );
   }
 }

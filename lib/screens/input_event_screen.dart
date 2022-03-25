@@ -1,3 +1,4 @@
+import 'package:calendar_journal/src/app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/events.dart';
@@ -73,11 +74,12 @@ class _EventInputState extends State<EventInput> {
         categoryModel.name = category['name'];
         categoryModel.id = category['id'];
         categoryModel.color = category['color'];
+        categoryModel.emoji = category['emoji'];
         _categoryList.add(categoryModel);
-        nameList.add(category['name']);
-        _category = nameList[0];
+        //nameList.add(category['emoji'] + " " + category['name']);
       });
     });
+    _category = _categoryList[0].name!;
   }
 
   _showToast(_text) {
@@ -130,7 +132,7 @@ class _EventInputState extends State<EventInput> {
             .copyWith(secondary: AppTheme.colors.secondaryColor));
 
     return Scaffold(
-      backgroundColor: AppTheme.colors.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -211,97 +213,195 @@ class _EventInputState extends State<EventInput> {
           )
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Form(
-              key: _formKey,
-              child: Column(children: <Widget>[
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '';
-                    }
-                    return null;
-                  },
-                  style: TextStyle(
-                    color: AppTheme.colors.secondaryColor,
-                    fontSize: 20,
-                    fontFamily: 'BalooBhai',
-                  ),
-                  controller: _eventNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter title',
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 0.0,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Form(
+            key: _formKey,
+            child: Column(children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        "Title",
+                        style: TextStyle(
+                          color: AppTheme.colors.secondaryColor,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai',
                         ),
-                        borderRadius: BorderRadius.circular(20.0)),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '';
-                    }
-                    return null;
-                  },
-                  style: TextStyle(
-                    color: AppTheme.colors.secondaryColor,
-                    fontSize: 20,
-                    fontFamily: 'BalooBhai',
-                  ),
-                  controller: _eventDescription,
-                  decoration: InputDecoration(
-                    hintText: 'Enter description',
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(20.0),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '';
+                      }
+                      return null;
+                    },
+                    style: TextStyle(
+                      color: AppTheme.colors.secondaryColor,
+                      fontSize: 15,
+                      fontFamily: 'BalooBhai2',
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    controller: _eventNameController,
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.grey),
+                      hintText: 'Enter title',
+                      filled: true,
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 0.0,
+                          color: AppTheme.colors.blueColor,
+                          width: 2.0,
                         ),
-                        borderRadius: BorderRadius.circular(20.0)),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppTheme.colors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(20.0)),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                DropdownButtonFormField(
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "Comments",
+                        style: TextStyle(
+                          color: AppTheme.colors.secondaryColor,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai',
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    minLines: 3,
+                    maxLines: null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '';
+                      }
+                      return null;
+                    },
+                    style: TextStyle(
+                      color: AppTheme.colors.secondaryColor,
+                      fontSize: 15,
+                      fontFamily: 'BalooBhai2',
+                    ),
+                    controller: _eventDescription,
+                    decoration: InputDecoration(
+                      hintText: 'Enter description',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.colors.blueColor,
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppTheme.colors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(20.0)),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppTheme.colors
+                          .blueColor, //                   <--- border color
+                      width: 2.0,
+                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)),
+
+                // dropdown below..
+                child: DropdownButton<String>(
                   value: _category,
-                  items: nameList.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  hint: Text('Category'),
                   onChanged: (String? value) {
                     setState(() {
                       _category = value!;
                     });
                   },
+                  items: _categoryList
+                      .map<DropdownMenuItem<String>>((Category category) {
+                    return DropdownMenuItem<String>(
+                      value: category.name,
+                      child: Row(
+                        children: [
+                          Text(category.emoji! + "  "),
+                          Text(category.name!)
+                        ],
+                      ),
+                    );
+                  }).toList(),
+
+                  // add extra sugar..
+                  icon: Icon(Icons.arrow_drop_down),
+                  iconSize: 42,
+                  underline: SizedBox(),
                 ),
-              ]),
-            ),
+              )
+              /*DropdownButtonFormField(
+                value: _category,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: AppTheme.colors.cyanColor, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                dropdownColor: Colors.white,
+                items: nameList.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                hint: Text('Category'),
+                onChanged: (String? value) {
+                  setState(() {
+                    _category = value!;
+                  });
+                },
+              ),*/
+            ]),
           ),
         ),
       ),

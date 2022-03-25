@@ -98,7 +98,7 @@ class _CategoryInputState extends State<CategoryInput> {
             .copyWith(secondary: AppTheme.colors.secondaryColor));
 
     return Scaffold(
-      backgroundColor: AppTheme.colors.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -174,64 +174,110 @@ class _CategoryInputState extends State<CategoryInput> {
             child: Form(
               key: _formKey,
               child: Column(children: <Widget>[
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '';
-                    }
-                    return null;
-                  },
-                  style: TextStyle(
-                    color: AppTheme.colors.secondaryColor,
-                    fontSize: 20,
-                    fontFamily: 'BalooBhai',
-                  ),
-                  controller: _categoryNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter title',
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 0.0,
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
                         ),
-                        borderRadius: BorderRadius.circular(20.0)),
-                  ),
+                        Text(
+                          "Category name",
+                          style: TextStyle(
+                            color: AppTheme.colors.secondaryColor,
+                            fontSize: 15,
+                            fontFamily: 'BalooBhai',
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '';
+                        }
+                        return null;
+                      },
+                      style: TextStyle(
+                        color: AppTheme.colors.secondaryColor,
+                        fontSize: 15,
+                        fontFamily: 'BalooBhai2',
+                      ),
+                      controller: _categoryNameController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter name of the category',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppTheme.colors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppTheme.colors.blueColor,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(20.0)),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
-                TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '';
-                    }
-                    return null;
-                  },
-                  style: TextStyle(
-                    color: AppTheme.colors.secondaryColor,
-                    fontSize: 20,
-                    fontFamily: 'BalooBhai',
-                  ),
-                  controller: _categoryEmojiController,
-                  decoration: InputDecoration(
-                    hintText: 'Choici emoji',
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 0.0,
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
                         ),
-                        borderRadius: BorderRadius.circular(20.0)),
-                  ),
+                        Text(
+                          "Emoji's category",
+                          style: TextStyle(
+                            color: AppTheme.colors.secondaryColor,
+                            fontSize: 15,
+                            fontFamily: 'BalooBhai',
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '';
+                        }
+                        return null;
+                      },
+                      style: TextStyle(
+                        color: AppTheme.colors.secondaryColor,
+                        fontSize: 15,
+                        fontFamily: 'BalooBhai2',
+                      ),
+                      controller: _categoryEmojiController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter an emoji which reprents the category',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.white,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppTheme.colors.blueColor,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppTheme.colors.blueColor,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(20.0)),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 20,
