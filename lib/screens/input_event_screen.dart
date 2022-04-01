@@ -10,13 +10,13 @@ import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 
 class EventInput extends StatefulWidget {
-  const EventInput(
-      {Key? key,
-      required this.mode,
-      required this.creation,
-      required this.event})
-      : super(key: key);
-  final String mode;
+  const EventInput({
+    Key? key,
+    required this.creation,
+    required this.event,
+  }) : super(key: key);
+  //final int id;
+
   final bool creation;
   final Event event;
   @override
@@ -62,6 +62,8 @@ class _EventInputState extends State<EventInput> {
       _eventDescription.text = widget.event.description!;
       _score = widget.event.score!;
       _category = widget.event.category!;
+      //nowDate = DateTime.fromMillisecondsSinceEpoch(time, isUtc: true);widget.event.datetime!;
+      print(_category);
     });
   }
 
@@ -158,7 +160,7 @@ class _EventInputState extends State<EventInput> {
         actions: [
           IconButton(
               icon: const Icon(Icons.check),
-              color: AppTheme.colors.primaryColor,
+              color: AppTheme.colors.greenColor,
               iconSize: 50,
               onPressed: () async {
                 // creation of exercice
@@ -184,11 +186,16 @@ class _EventInputState extends State<EventInput> {
                       //&& _preparationTime != 0
                       ) {
                     final _event = Event();
+                    _event.id = id;
                     _event.name = _eventNameController.text;
                     _event.description = _eventDescription.text;
-
+                    _event.datetime = widget.event.datetime;
+                    _event.category = _category;
                     await _eventService.updateEvent(_event);
                     Navigator.pop(context);
+
+                    print(_event.category);
+
                     _showToast("Event modified");
                   } else {
                     _showToast("Empty value");
@@ -197,20 +204,6 @@ class _EventInputState extends State<EventInput> {
               }
               // 2
               ),
-          Visibility(
-            visible: !widget.creation,
-            child: PopupMenuButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  size: 40,
-                  color: AppTheme.colors.secondaryColor,
-                ),
-                itemBuilder: (_) => const <PopupMenuItem<String>>[
-                      PopupMenuItem<String>(
-                          child: Text('Delete'), value: 'delete'),
-                    ],
-                onSelected: choiceAction),
-          )
         ],
       ),
       body: SingleChildScrollView(
@@ -257,14 +250,14 @@ class _EventInputState extends State<EventInput> {
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppTheme.colors.blueColor,
+                          color: AppTheme.colors.secondaryColor,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.blueColor,
+                            color: AppTheme.colors.secondaryColor,
                             width: 2.0,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),
@@ -316,15 +309,15 @@ class _EventInputState extends State<EventInput> {
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppTheme.colors.blueColor,
+                          color: AppTheme.colors.secondaryColor,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.blueColor,
-                            width: 2.0,
+                            color: AppTheme.colors.secondaryColor,
+                            width: 2,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),
                     ),
@@ -334,43 +327,64 @@ class _EventInputState extends State<EventInput> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppTheme.colors
-                          .blueColor, //                   <--- border color
-                      width: 2.0,
-                    ),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-
-                // dropdown below..
-                child: DropdownButton<String>(
-                  value: _category,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _category = value!;
-                    });
-                  },
-                  items: _categoryList
-                      .map<DropdownMenuItem<String>>((Category category) {
-                    return DropdownMenuItem<String>(
-                      value: category.name,
-                      child: Row(
-                        children: [
-                          Text(category.emoji! + "  "),
-                          Text(category.name!)
-                        ],
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 15,
                       ),
-                    );
-                  }).toList(),
+                      Text(
+                        "Category",
+                        style: TextStyle(
+                          color: AppTheme.colors.secondaryColor,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppTheme.colors
+                              .secondaryColor, //                   <--- border color
+                          width: 2.0,
+                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
 
-                  // add extra sugar..
-                  icon: Icon(Icons.arrow_drop_down),
-                  iconSize: 42,
-                  underline: SizedBox(),
-                ),
+                    // dropdown below..
+                    child: DropdownButton<String>(
+                      value: _category,
+                      onChanged: (String? value) {
+                        setState(() {
+                          _category = value!;
+                        });
+                      },
+                      items: _categoryList
+                          .map<DropdownMenuItem<String>>((Category category) {
+                        return DropdownMenuItem<String>(
+                          value: category.name,
+                          child: Row(
+                            children: [
+                              Text(category.emoji! + "  "),
+                              Text(category.name!)
+                            ],
+                          ),
+                        );
+                      }).toList(),
+
+                      // add extra sugar..
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 42,
+                      underline: SizedBox(),
+                    ),
+                  ),
+                ],
               )
               /*DropdownButtonFormField(
                 value: _category,

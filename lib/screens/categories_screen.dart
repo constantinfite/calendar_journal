@@ -41,6 +41,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         categoryModel.name = category['name'];
         categoryModel.emoji = category['emoji'];
         categoryModel.id = category['id'];
+        categoryModel.color = category['color'];
         _categoryList.add(categoryModel);
       });
     });
@@ -64,37 +65,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 )))
         .then((_) {
       getAllCategories();
+      setState(() {});
     });
-  }
-
-  _deleteFormDialog(BuildContext context, categoryId) {
-    return showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (param) {
-          return AlertDialog(
-            actions: <Widget>[
-              FlatButton(
-                color: Colors.green,
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              FlatButton(
-                color: Colors.red,
-                onPressed: () async {
-                  var result =
-                      await _categoryService.deleteCategory(categoryId);
-                  if (result > 0) {
-                    Navigator.pop(context);
-                    getAllCategories();
-                  }
-                },
-                child: Text('Delete'),
-              ),
-            ],
-            title: Text('Are you sure you want to delete this?'),
-          );
-        });
   }
 
   @override
@@ -119,15 +91,54 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          Icon(Icons.more_vert),
-        ],
         actionsIconTheme: IconThemeData(
           color: AppTheme.colors.secondaryColor,
           size: 36,
         ),
       ),
-      body: ListView.builder(
+      body: GridView.count(
+        // Create a grid with 2 columns. If you change the scrollDirection to
+        // horizontal, this produces 2 rows.
+        crossAxisCount: 2,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        padding: const EdgeInsets.all(20),
+        // Generate 100 widgets that display their index in the List.
+        children: List.generate(_categoryList.length, (index) {
+          return GestureDetector(
+            onTap: () => {_editCategory(context, _categoryList[index].id)},
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Color(_categoryList[index].color ?? 000000),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    _categoryList[index].emoji!,
+                    style: TextStyle(
+                      color: AppTheme.colors.secondaryColor,
+                      fontSize: 50,
+                      fontFamily: 'BalooBhai',
+                    ),
+                  ),
+                  Text(
+                    _categoryList[index].name!,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontFamily: 'BalooBhai',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+      /*ListView.builder(
           itemCount: _categoryList.length,
           itemBuilder: (context, index) {
             return Padding(
@@ -150,7 +161,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     (_categoryList[index].name!),
                     overflow: TextOverflow.fade,
                     maxLines: 1,
-                    softWrap: false,
+                    softWrap: true,
                     style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'BalooBhai',
@@ -183,6 +194,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             );
           }),
+          */
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(

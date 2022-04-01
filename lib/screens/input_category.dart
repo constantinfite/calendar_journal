@@ -1,3 +1,4 @@
+import 'package:calendar_journal/src/app.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,6 +21,7 @@ class _CategoryInputState extends State<CategoryInput> {
   final _categoryNameController = TextEditingController();
   final _categoryEmojiController = TextEditingController();
   Color _color = Colors.blue;
+  Color currentColor = Color(0xff443a49);
 
   late FToast fToast;
   final _formKey = GlobalKey<FormState>();
@@ -88,6 +90,17 @@ class _CategoryInputState extends State<CategoryInput> {
       _showToast("Event delete");
     }
   }*/
+  void changeColor(Color color) {
+    setState(() => _color = color);
+  }
+
+  choiceAction(String choice) async {
+    if (choice == "delete") {
+      await _categoryService.deleteCategory(id);
+      Navigator.pop(context);
+      _showToast("Category deleted");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +129,7 @@ class _CategoryInputState extends State<CategoryInput> {
           widget.creation ? "Create category" : "Modify category",
           style: TextStyle(
             color: AppTheme.colors.secondaryColor,
-            fontSize: 30,
+            fontSize: 25,
             fontFamily: 'BalooBhai',
           ),
         ),
@@ -124,8 +137,8 @@ class _CategoryInputState extends State<CategoryInput> {
         actions: [
           IconButton(
               icon: const Icon(Icons.check),
-              color: AppTheme.colors.primaryColor,
-              iconSize: 50,
+              color: AppTheme.colors.greenColor,
+              iconSize: 40,
               onPressed: () async {
                 // creation of exercice
                 if (widget.creation) {
@@ -134,10 +147,10 @@ class _CategoryInputState extends State<CategoryInput> {
                     _category.name = _categoryNameController.text;
                     _category.emoji = _categoryEmojiController.text;
                     _category.color = _color.value;
-                    print(_category.emoji);
+                    print(_category.color);
                     await _categoryService.saveCategory(_category);
 
-                    _showToast("Event created");
+                    _showToast("Category created");
                     Navigator.pop(context);
                   } else {
                     fToast.removeQueuedCustomToasts();
@@ -162,6 +175,20 @@ class _CategoryInputState extends State<CategoryInput> {
               }
               // 2
               ),
+          Visibility(
+            visible: !widget.creation,
+            child: PopupMenuButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 30,
+                  color: AppTheme.colors.secondaryColor,
+                ),
+                itemBuilder: (_) => const <PopupMenuItem<String>>[
+                      PopupMenuItem<String>(
+                          child: Text('Delete'), value: 'delete'),
+                    ],
+                onSelected: choiceAction),
+          )
         ],
       ),
       body: GestureDetector(
@@ -211,14 +238,14 @@ class _CategoryInputState extends State<CategoryInput> {
                         fillColor: Colors.white,
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.blueColor,
+                            color: AppTheme.colors.secondaryColor,
                             width: 2.0,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppTheme.colors.blueColor,
+                              color: AppTheme.colors.secondaryColor,
                               width: 2.0,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
@@ -235,7 +262,7 @@ class _CategoryInputState extends State<CategoryInput> {
                           width: 15,
                         ),
                         Text(
-                          "Emoji's category",
+                          "Category emoji",
                           style: TextStyle(
                             color: AppTheme.colors.secondaryColor,
                             fontSize: 15,
@@ -264,14 +291,14 @@ class _CategoryInputState extends State<CategoryInput> {
                         fillColor: Colors.white,
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.blueColor,
+                            color: AppTheme.colors.secondaryColor,
                             width: 2.0,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppTheme.colors.blueColor,
+                              color: AppTheme.colors.secondaryColor,
                               width: 2.0,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
@@ -282,88 +309,31 @@ class _CategoryInputState extends State<CategoryInput> {
                 SizedBox(
                   height: 20,
                 ),
-                Card(
-                  color: Colors.white,
-                  child: Column(children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                  'Pick a color!',
-                                  style: TextStyle(
-                                    color: AppTheme.colors.secondaryColor,
-                                    fontSize: 20,
-                                    fontFamily: 'BalooBhai',
-                                  ),
-                                ),
-                                content: SingleChildScrollView(
-                                  child: BlockPicker(
-                                    pickerColor: _color, //default color
-                                    onColorChanged: (Color color) {
-                                      //on color picked
-                                      setState(() {
-                                        _color = color;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 2,
-                                      primary: AppTheme.colors.secondaryColor,
-                                      textStyle: TextStyle(
-                                          fontFamily: "BalooBhai",
-                                          fontSize: 30),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          side: BorderSide(
-                                              color: Colors.transparent)),
-                                    ),
-                                    child: Text(
-                                      'Save',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: 'BalooBhai',
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); //dismiss the color picker
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      child: ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Select color",
-                              style: TextStyle(
-                                color: AppTheme.colors.secondaryColor,
-                                fontSize: 20,
-                                fontFamily: 'BalooBhai',
-                              ),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: _color),
-                            )
-                          ],
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
                         ),
-                      ),
+                        Text(
+                          "Category color",
+                          style: TextStyle(
+                            color: AppTheme.colors.secondaryColor,
+                            fontSize: 15,
+                            fontFamily: 'BalooBhai',
+                          ),
+                        ),
+                      ],
                     ),
-                    /* SizedBox(
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(children: [
+                        BlockPicker(
+                          pickerColor: _color,
+                          onColorChanged: changeColor,
+                        ),
+                        /* SizedBox(
                       height: 150,
                       child: ListTile(
                           title: BlockPicker(
@@ -376,11 +346,14 @@ class _CategoryInputState extends State<CategoryInput> {
                         },
                       )),
                     ),*/
-                  ]),
-                  shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.transparent)),
-                  elevation: 2,
+                      ]),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ],
                 ),
               ]),
             ),

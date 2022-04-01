@@ -29,12 +29,16 @@ class _StatsScreenState extends State<StatsScreen> {
   final _categoryService = CategoryService();
   final _eventService = EventService();
 
-  final _event = Event();
+  var _event = Event();
+  var event;
   List<Event> _selectedEvents = <Event>[];
 
   Map<DateTime, List<Event>> _events = LinkedHashMap(
     equals: isSameDay,
   );
+
+  int id = 0;
+  String _value = "";
 
   List<Category> _categoryList = <Category>[];
   late var _categorySelected = Category();
@@ -169,6 +173,59 @@ class _StatsScreenState extends State<StatsScreen> {
     }
   }
 
+  choiceAction(int id, choice) async {
+    if (choice == "delete") {
+      print("delete");
+      await _eventService.deleteEvent(id);
+      Navigator.pop(context);
+
+      //_showToast("Exercice delete");
+    } else {
+      event = await _eventService.readEventById(id);
+
+      setState(() {
+        _event.id = event[0]['id'];
+        _event.name = event[0]['name'] ?? 'No name';
+        _event.description = event[0]['description'] ?? 'No description';
+        _event.score = event[0]['score'] ?? 0;
+        _event.category = event[0]['category'];
+        _event.datetime = event[0]['datetime'];
+      });
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              builder: (context) => EventInput(creation: false, event: _event)))
+          .then((_) {
+        getTask1().then((val) => setState(() {
+              _events = val;
+
+              var _correctDate = DateTime.utc(
+                  _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+
+              _selectedEvents = _getEventsFromDay(_correctDate);
+              if (_categorySelected.name != "All") {
+                _selectedEvents = _selectedEvents
+                    .where((i) => i.category == _categorySelected.name)
+                    .toList();
+              }
+            }));
+        Navigator.pop(context);
+      });
+    }
+    getTask1().then((val) => setState(() {
+          _events = val;
+
+          var _correctDate = DateTime.utc(
+              _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+
+          _selectedEvents = _getEventsFromDay(_correctDate);
+          if (_categorySelected.name != "All") {
+            _selectedEvents = _selectedEvents
+                .where((i) => i.category == _categorySelected.name)
+                .toList();
+          }
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,7 +235,7 @@ class _StatsScreenState extends State<StatsScreen> {
             //Text(createDate),
 
             Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -313,8 +370,10 @@ class _StatsScreenState extends State<StatsScreen> {
           spaceBetweenChildren: 10,
           onPress: () => Navigator.of(context)
               .push(MaterialPageRoute(
-                  builder: (context) =>
-                      EventInput(mode: "", creation: true, event: _event)))
+                  builder: (context) => EventInput(
+                        creation: true,
+                        event: _event,
+                      )))
               .then((_) {
             getTask1().then((val) => setState(() {
                   _events = val;
@@ -367,7 +426,13 @@ class _StatsScreenState extends State<StatsScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                child: Text(_categoryList[index].name!,
+                child: Text(
+                    _categoryList[index].name!.length > 15
+                        ? '${_categoryList[index].name!.substring(0, 15)}...'
+                        : _categoryList[index].name!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                     style: TextStyle(
                       fontSize: 18,
                       color:
@@ -389,7 +454,7 @@ class _StatsScreenState extends State<StatsScreen> {
           context: context,
           isScrollControlled: true,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
           constraints: BoxConstraints(),
           builder: (BuildContext context) {
             return bottomSheet(event);
@@ -397,7 +462,7 @@ class _StatsScreenState extends State<StatsScreen> {
         );
       },
       child: Card(
-          margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+          margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
           color: Colors.white,
           shape: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -408,7 +473,7 @@ class _StatsScreenState extends State<StatsScreen> {
             child: ListTile(
               title: Text(
                 event.name,
-                overflow: TextOverflow.fade,
+                overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: false,
                 style: TextStyle(
@@ -416,7 +481,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     fontFamily: 'BalooBhai',
                     color: AppTheme.colors.secondaryColor),
               ),
-              trailing: Text(
+              subtitle: Text(
                 datesecondToMinuteHour(event.datetime),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
@@ -458,75 +523,91 @@ class _StatsScreenState extends State<StatsScreen> {
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
+        height: MediaQuery.of(context).size.height * 0.6,
         padding: EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 0.85,
+        width: MediaQuery.of(context).size.width * 1,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: Text(
-                        event.name,
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'BalooBhai',
-                            color: AppTheme.colors.greenColor),
+                  Text(
+                    datesecondToMinuteHour(event.datetime),
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'BalooBhai2',
+                        color: AppTheme.colors.greenColor),
+                  ),
+                  PopupMenuButton(
+                      icon: Icon(
+                        Icons.more_vert,
+                        size: 30,
+                        color: AppTheme.colors.secondaryColor,
                       ),
+                      itemBuilder: (_) => const <PopupMenuItem<String>>[
+                            PopupMenuItem(child: Text('Edit'), value: 'edit'),
+                            PopupMenuItem(
+                                child: Text('Delete'), value: 'delete'),
+                          ],
+                      onSelected: (value) {
+                        choiceAction(event.id, value as String);
+                      })
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      event.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'BalooBhai',
+                          color: AppTheme.colors.greenColor),
                     ),
-                  ]),
-                  Row(
-                    children: [
-                      Text(
-                        datesecondToMinuteHour(event.datetime),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'BalooBhai',
-                            color: AppTheme.colors.greenColor),
-                      ),
-                    ],
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Container(
                       height: 150,
-                      padding: const EdgeInsets.all(15),
-                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.only(top: 10),
+                      //margin: EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
                         ),
                         border: Border.all(
-                          width: 1,
-                          color: AppTheme.colors.secondaryColor,
-                          style: BorderStyle.solid,
+                          width: 0,
+                          color: Colors.transparent,
+                          //style: BorderStyle.solid,
                         ),
                       ),
                       child: Text(
                         event.description,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 15,
                           fontFamily: 'BalooBhai2',
                           color: AppTheme.colors.secondaryColor,
                         ),
@@ -568,10 +649,12 @@ String formatDuration(int totalSeconds) {
 
 String datesecondToMinuteHour(int dateSecond) {
   var date = DateTime.fromMillisecondsSinceEpoch(dateSecond).toLocal();
+  var month = DateFormat('MMMM').format(DateTime(0, date.month));
+  var day = date.day;
   var hour = date.hour;
   var minute = date.minute;
 
   var minuteString = '$minute'.padLeft(2, '0');
 
-  return '$hour h $minuteString';
+  return '$day $month, $hour:$minuteString';
 }

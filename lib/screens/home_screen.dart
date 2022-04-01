@@ -56,9 +56,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colors.greenColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppTheme.colors.secondaryColor),
+        iconTheme: IconThemeData(color: AppTheme.colors.backgroundColor),
         elevation: 0,
-        backgroundColor: AppTheme.colors.backgroundColor,
+        backgroundColor: AppTheme.colors.secondaryColor,
+        centerTitle: true,
+        title: Text(
+          "Calendar",
+          style: TextStyle(
+            color: AppTheme.colors.backgroundColor,
+            fontSize: 30,
+            fontFamily: 'BalooBhai',
+          ),
+        ),
       ),
       body: screens[_selectedIndex],
       //drawer: const DrawerNavigation(),
@@ -66,12 +75,17 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(MyFlutterApp.noun_list),
-            label: 'Workout',
+            icon: Icon(
+              MyFlutterApp.noun_calendar,
+              size: 30,
+            ),
+            label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(MyFlutterApp.noun_stat),
-            label: 'Stats',
+            icon: Icon(
+              MyFlutterApp.noun_list,
+            ),
+            label: 'Todo',
           ),
         ],
         currentIndex: _selectedIndex,
