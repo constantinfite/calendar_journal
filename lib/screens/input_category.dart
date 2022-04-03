@@ -197,7 +197,7 @@ class _CategoryInputState extends State<CategoryInput> {
         },
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.fromLTRB(30, 10, 30, 30),
             child: Form(
               key: _formKey,
               child: Column(children: <Widget>[
@@ -239,14 +239,14 @@ class _CategoryInputState extends State<CategoryInput> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: AppTheme.colors.secondaryColor,
-                            width: 2.0,
+                            width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: AppTheme.colors.secondaryColor,
-                              width: 2.0,
+                              width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
                       ),
@@ -292,14 +292,14 @@ class _CategoryInputState extends State<CategoryInput> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: AppTheme.colors.secondaryColor,
-                            width: 2.0,
+                            width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: AppTheme.colors.secondaryColor,
-                              width: 2.0,
+                              width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
                       ),
@@ -349,7 +349,7 @@ class _CategoryInputState extends State<CategoryInput> {
                       ]),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(width: 2),
+                        border: Border.all(width: 1.5),
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),

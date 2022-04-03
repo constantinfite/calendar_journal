@@ -125,6 +125,42 @@ class _EventInputState extends State<EventInput> {
     }
   }
 
+  //Dialog if sure to exit workout
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: widget.creation ? Text("Exit event creation") : Text("Exit event modification"),
+      content: widget.creation ? Text("You will lose all the content") : Text("You will lose the modify content") ,
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).copyWith(
@@ -144,7 +180,7 @@ class _EventInputState extends State<EventInput> {
             ),
             color: AppTheme.colors.secondaryColor,
             iconSize: 40,
-            onPressed: () => Navigator.pop(context)
+            onPressed: () => {showAlertDialog(context)}
             // 2
             ),
         backgroundColor: Colors.transparent,
@@ -251,16 +287,78 @@ class _EventInputState extends State<EventInput> {
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: AppTheme.colors.secondaryColor,
-                          width: 2.0,
+                          width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: AppTheme.colors.secondaryColor,
-                            width: 2.0,
+                            width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "Category",
+                        style: TextStyle(
+                          color: AppTheme.colors.secondaryColor,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppTheme.colors
+                              .secondaryColor, //                   <--- border color
+                          width: 1.5,
+                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+
+                    // dropdown below..
+                    child: DropdownButton<String>(
+                      value: _category,
+                      onChanged: (String? value) {
+                        setState(() {
+                          _category = value!;
+                        });
+                      },
+                      items: _categoryList
+                          .map<DropdownMenuItem<String>>((Category category) {
+                        return DropdownMenuItem<String>(
+                          value: category.name,
+                          child: Row(
+                            children: [
+                              Text(category.emoji! + "  "),
+                              Text(category.name!)
+                            ],
+                          ),
+                        );
+                      }).toList(),
+
+                      // add extra sugar..
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 42,
+                      underline: SizedBox(),
                     ),
                   ),
                 ],
@@ -310,14 +408,14 @@ class _EventInputState extends State<EventInput> {
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: AppTheme.colors.secondaryColor,
-                          width: 2.0,
+                          width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: AppTheme.colors.secondaryColor,
-                            width: 2,
+                            width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),
                     ),
@@ -325,66 +423,7 @@ class _EventInputState extends State<EventInput> {
                 ],
               ),
               SizedBox(
-                height: 20,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        "Category",
-                        style: TextStyle(
-                          color: AppTheme.colors.secondaryColor,
-                          fontSize: 15,
-                          fontFamily: 'BalooBhai',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppTheme.colors
-                              .secondaryColor, //                   <--- border color
-                          width: 2.0,
-                        ),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-
-                    // dropdown below..
-                    child: DropdownButton<String>(
-                      value: _category,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _category = value!;
-                        });
-                      },
-                      items: _categoryList
-                          .map<DropdownMenuItem<String>>((Category category) {
-                        return DropdownMenuItem<String>(
-                          value: category.name,
-                          child: Row(
-                            children: [
-                              Text(category.emoji! + "  "),
-                              Text(category.name!)
-                            ],
-                          ),
-                        );
-                      }).toList(),
-
-                      // add extra sugar..
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 42,
-                      underline: SizedBox(),
-                    ),
-                  ),
-                ],
+                height: 50,
               )
               /*DropdownButtonFormField(
                 value: _category,

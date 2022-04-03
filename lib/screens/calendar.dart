@@ -12,6 +12,7 @@ import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -173,11 +174,50 @@ class _StatsScreenState extends State<StatsScreen> {
     }
   }
 
-  choiceAction(int id, choice) async {
+  choiceAction(context, int id, choice) async {
     if (choice == "delete") {
-      print("delete");
-      await _eventService.deleteEvent(id);
-      Navigator.pop(context);
+      Future.delayed(
+          const Duration(seconds: 0),
+          () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Text("Are you sure to delete the event"),
+                    actions: [
+                      TextButton(
+                        child: Text("Cancel"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Continue"),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await _eventService.deleteEvent(id);
+                          Navigator.pop(context);
+                          getTask1().then((val) => setState(() {
+                                _events = val;
+
+                                var _correctDate = DateTime.utc(
+                                    _selectedDay!.year,
+                                    _selectedDay!.month,
+                                    _selectedDay!.day);
+
+                                _selectedEvents =
+                                    _getEventsFromDay(_correctDate);
+                                if (_categorySelected.name != "All") {
+                                  _selectedEvents = _selectedEvents
+                                      .where((i) =>
+                                          i.category == _categorySelected.name)
+                                      .toList();
+                                }
+                              }));
+                        },
+                      ),
+                    ],
+                  )));
+      //await _eventService.deleteEvent(id);
+      //Navigator.pop(context);
 
       //_showToast("Exercice delete");
     } else {
@@ -211,19 +251,14 @@ class _StatsScreenState extends State<StatsScreen> {
         Navigator.pop(context);
       });
     }
-    getTask1().then((val) => setState(() {
-          _events = val;
+  }
 
-          var _correctDate = DateTime.utc(
-              _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+  showAlertDialog(
+    BuildContext context,
+  ) {
+    // set up the buttons
 
-          _selectedEvents = _getEventsFromDay(_correctDate);
-          if (_categorySelected.name != "All") {
-            _selectedEvents = _selectedEvents
-                .where((i) => i.category == _categorySelected.name)
-                .toList();
-          }
-        }));
+    // set up the AlertDialog
   }
 
   @override
@@ -450,12 +485,12 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget cardEvent(event) {
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
+        showBarModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          barrierColor: Color.fromARGB(152, 0, 0, 0),
           context: context,
-          isScrollControlled: true,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-          constraints: BoxConstraints(),
           builder: (BuildContext context) {
             return bottomSheet(event);
           },
@@ -520,103 +555,93 @@ class _StatsScreenState extends State<StatsScreen> {
 
   Widget bottomSheet(event) {
     return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.6,
+        color: Colors.white,
+        //height: MediaQuery.of(context).size.height * 0.6,
         padding: EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 1,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    datesecondToMinuteHour(event.datetime),
-                    overflow: TextOverflow.fade,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  datesecondToMinuteHour(event.datetime),
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'BalooBhai2',
+                      color: AppTheme.colors.greenColor),
+                ),
+                PopupMenuButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 30,
+                      color: AppTheme.colors.secondaryColor,
+                    ),
+                    itemBuilder: (_) => const <PopupMenuItem<String>>[
+                          PopupMenuItem(child: Text('Edit'), value: 'edit'),
+                          PopupMenuItem(child: Text('Delete'), value: 'delete'),
+                        ],
+                    onSelected: (value) {
+                      choiceAction(context, event.id, value as String);
+                    })
+              ],
+            ),
+            Row(
+              //mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    event.name,
+                    overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     softWrap: false,
                     style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
+                        fontSize: 20,
+                        fontFamily: 'BalooBhai',
                         color: AppTheme.colors.greenColor),
                   ),
-                  PopupMenuButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        size: 30,
+                ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 10),
+                    //margin: EdgeInsets.symmetric(vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      border: Border.all(
+                        width: 0,
+                        color: Colors.transparent,
+                        //style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: Text(
+                      event.description,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'BalooBhai2',
                         color: AppTheme.colors.secondaryColor,
                       ),
-                      itemBuilder: (_) => const <PopupMenuItem<String>>[
-                            PopupMenuItem(child: Text('Edit'), value: 'edit'),
-                            PopupMenuItem(
-                                child: Text('Delete'), value: 'delete'),
-                          ],
-                      onSelected: (value) {
-                        choiceAction(event.id, value as String);
-                      })
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Row(
-                //mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      event.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'BalooBhai',
-                          color: AppTheme.colors.greenColor),
                     ),
                   ),
-                ],
-              ),
+                )
+              ],
             ),
-            Expanded(
-              flex: 5,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 150,
-                      padding: const EdgeInsets.only(top: 10),
-                      //margin: EdgeInsets.symmetric(vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
-                        border: Border.all(
-                          width: 0,
-                          color: Colors.transparent,
-                          //style: BorderStyle.solid,
-                        ),
-                      ),
-                      child: Text(
-                        event.description,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontFamily: 'BalooBhai2',
-                          color: AppTheme.colors.secondaryColor,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            SizedBox(height: 50)
           ],
         ),
       ),
