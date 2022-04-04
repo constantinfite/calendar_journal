@@ -30,12 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (index) {
       case 0:
         {
-          _title = 'EXERCICES';
+          _title = 'Calendar';
         }
         break;
       case 1:
         {
-          _title = 'STATS';
+          _title = 'To do';
         }
         break;
     }
