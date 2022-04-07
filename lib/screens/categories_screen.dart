@@ -73,19 +73,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _globalKey,
-      backgroundColor: AppTheme.colors.backgroundColor,
       appBar: AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppTheme.colors.secondaryColor),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => HomeScreen()))),
         toolbarHeight: 100,
         elevation: 0,
-        backgroundColor: AppTheme.colors.backgroundColor,
+        backgroundColor: Color.fromARGB(255, 39, 39, 39),
         title: Text(
           "Categories",
           style: TextStyle(
-            color: AppTheme.colors.secondaryColor,
+            color: Colors.white,
             fontSize: 35,
             fontFamily: 'BalooBhai',
           ),
@@ -196,6 +195,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           }),
           */
       floatingActionButton: FloatingActionButton(
+          foregroundColor: Theme.of(context).primaryColorDark,
           onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(
                       builder: (context) => CategoryInput(

@@ -4,6 +4,8 @@ import 'package:calendar_journal/screens/calendar.dart';
 import 'package:calendar_journal/screens/home_screen.dart';
 import 'package:calendar_journal/screens/categories_screen.dart';
 import 'package:calendar_journal/services/category_service.dart';
+import 'package:provider/provider.dart';
+import 'package:calendar_journal/theme_manager.dart';
 
 class DrawerNavigaton extends StatefulWidget {
   @override
@@ -46,6 +48,34 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
               title: Text('Categories'),
               onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => CategoriesScreen())),
+            ),
+            ListTile(
+              title: Consumer<ThemeNotifier>(builder: (context, theme, child) {
+                {
+                  return Row(
+                    children: [
+                      Container(
+                        child: FlatButton(
+                          onPressed: () => {
+                            print('Set Light Theme'),
+                            theme.setLightMode(),
+                          },
+                          child: Text('Set Light Theme'),
+                        ),
+                      ),
+                      Container(
+                        child: FlatButton(
+                          onPressed: () => {
+                            print('Set Dark theme'),
+                            theme.setDarkMode(),
+                          },
+                          child: Text('Set Dark theme'),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }),
             ),
             Divider(),
             Column(),

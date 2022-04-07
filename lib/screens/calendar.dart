@@ -82,7 +82,7 @@ class _StatsScreenState extends State<StatsScreen> {
     super.dispose();
   }
 
-  Color colorCategory(category) {
+  Color colorCategoryDot(category) {
     Color color = Colors.blue;
     for (var cat in _categoryList) {
       if (cat.name == category) {
@@ -261,10 +261,42 @@ class _StatsScreenState extends State<StatsScreen> {
     // set up the AlertDialog
   }
 
+  Color colorCategory(index) {
+    if (Theme.of(context).brightness == Brightness.dark) {
+      if (_categoryList[index].name! == _categorySelected.name) {
+        return Colors.white;
+      } else {
+        return Color.fromARGB(255, 39, 39, 39);
+      }
+    } else {
+      if (_categoryList[index].name! == _categorySelected.name) {
+        return Color.fromARGB(255, 39, 39, 39);
+      } else {
+        return Colors.white;
+      }
+    }
+  }
+
+  Color colorTextCategory(index) {
+    if (Theme.of(context).brightness == Brightness.light) {
+      if (_categoryList[index].name! == _categorySelected.name) {
+        return Colors.white;
+      } else {
+        return Color.fromARGB(255, 39, 39, 39);
+      }
+    } else {
+      if (_categoryList[index].name! == _categorySelected.name) {
+        return Color.fromARGB(255, 39, 39, 39);
+      } else {
+        return Colors.white;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppTheme.colors.backgroundColor,
+        //backgroundColor: AppTheme.colors.backgroundColor,
         body: Column(
           children: [
             //Text(createDate),
@@ -273,7 +305,7 @@ class _StatsScreenState extends State<StatsScreen> {
               margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(6),
               ),
               child: TableCalendar(
@@ -297,7 +329,7 @@ class _StatsScreenState extends State<StatsScreen> {
                         // provide your own condition here
                         color: event.category! == _categorySelected.name
                             ? Color(_categorySelected.color!)
-                            : colorCategory(event.category),
+                            : colorCategoryDot(event.category),
                         shape: BoxShape.circle,
                       ),
                     );
@@ -400,6 +432,7 @@ class _StatsScreenState extends State<StatsScreen> {
         floatingActionButton: SpeedDial(
           icon: Icons.add,
           activeIcon: Icons.close,
+          foregroundColor: Theme.of(context).primaryColorDark,
           backgroundColor: AppTheme.colors.greenColor,
           spacing: 15,
           spaceBetweenChildren: 10,
@@ -448,10 +481,8 @@ class _StatsScreenState extends State<StatsScreen> {
         });
       },
       child: Card(
-        color: _categoryList[index].name! == _categorySelected.name
-            ? AppTheme.colors.secondaryColor
-            //Color(_categorySelected.color!)
-            : Colors.white,
+        color: colorCategory(index),
+        //Theme.of(context).scaffoldBackgroundColor
         shape: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(color: Colors.transparent)),
@@ -470,10 +501,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     softWrap: false,
                     style: TextStyle(
                       fontSize: 18,
-                      color:
-                          _categorySelected.name == _categoryList[index].name!
-                              ? Colors.white
-                              : AppTheme.colors.secondaryColor,
+                      color: colorTextCategory(index),
                       fontFamily: 'BalooBhai',
                     )),
               ),
@@ -498,7 +526,7 @@ class _StatsScreenState extends State<StatsScreen> {
       },
       child: Card(
           margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
-          color: Colors.white,
+          color: Theme.of(context).primaryColorDark,
           shape: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(color: Colors.transparent)),
@@ -514,7 +542,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontFamily: 'BalooBhai',
-                    color: AppTheme.colors.secondaryColor),
+                    color: Theme.of(context).primaryColorLight),
               ),
               subtitle: Text(
                 datesecondToMinuteHour(event.datetime),
@@ -524,7 +552,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 style: TextStyle(
                   fontSize: 15,
                   fontFamily: 'BalooBhai2',
-                  color: AppTheme.colors.secondaryColor,
+                  color: Theme.of(context).primaryColorLight,
                 ),
               ),
               leading: Container(
@@ -533,7 +561,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 width: 50.0,
                 height: 50.0,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 235, 235, 235),
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
@@ -556,7 +584,7 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget bottomSheet(event) {
     return SingleChildScrollView(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).primaryColorDark,
         //height: MediaQuery.of(context).size.height * 0.6,
         padding: EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 1,
@@ -583,7 +611,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     icon: Icon(
                       Icons.more_vert,
                       size: 30,
-                      color: AppTheme.colors.secondaryColor,
+                      color: Theme.of(context).primaryColorLight,
                     ),
                     itemBuilder: (_) => const <PopupMenuItem<String>>[
                           PopupMenuItem(child: Text('Edit'), value: 'edit'),
@@ -634,7 +662,7 @@ class _StatsScreenState extends State<StatsScreen> {
                       style: TextStyle(
                         fontSize: 15,
                         fontFamily: 'BalooBhai2',
-                        color: AppTheme.colors.secondaryColor,
+                        color: Theme.of(context).primaryColorLight,
                       ),
                     ),
                   ),

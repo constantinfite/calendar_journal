@@ -56,9 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppTheme.colors.greenColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppTheme.colors.backgroundColor),
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
-        backgroundColor: AppTheme.colors.secondaryColor,
+        backgroundColor: Color.fromARGB(255, 39, 39, 39),
         centerTitle: true,
         title: Text(
           "Calendar",

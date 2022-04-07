@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:calendar_journal/theme_manager.dart';
 
 void main() {
-  runApp(
-    const MyApp(),
-  );
+  return runApp(ChangeNotifierProvider<ThemeNotifier>(
+    create: (_) => new ThemeNotifier(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,12 +16,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      //title: 'Flutter Demo',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      //themeMode: provider.themeMode,
-      home: HomeScreen(),
-    );
+    return Consumer<ThemeNotifier>(builder: (context, theme, child) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: theme.getTheme(),
+        home: const HomeScreen(),
+      );
+    });
   }
 }

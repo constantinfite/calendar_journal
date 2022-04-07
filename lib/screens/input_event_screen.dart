@@ -89,7 +89,7 @@ class _EventInputState extends State<EventInput> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: AppTheme.colors.secondaryColor,
+        color: Theme.of(context).primaryColorLight,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -97,7 +97,7 @@ class _EventInputState extends State<EventInput> {
           Text(
             _text,
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               fontSize: 20,
               fontFamily: 'BalooBhai2',
             ),
@@ -144,8 +144,12 @@ class _EventInputState extends State<EventInput> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: widget.creation ? Text("Exit event creation") : Text("Exit event modification"),
-      content: widget.creation ? Text("You will lose all the content") : Text("You will lose the modify content") ,
+      title: widget.creation
+          ? Text("Exit event creation")
+          : Text("Exit event modification"),
+      content: widget.creation
+          ? Text("You will lose all the content")
+          : Text("You will lose the modify content"),
       actions: [
         cancelButton,
         continueButton,
@@ -165,12 +169,11 @@ class _EventInputState extends State<EventInput> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).copyWith(
         dividerColor: Colors.transparent,
-        unselectedWidgetColor: AppTheme.colors.secondaryColor,
+        unselectedWidgetColor: Theme.of(context).primaryColorLight,
         colorScheme: ColorScheme.fromSwatch()
-            .copyWith(secondary: AppTheme.colors.secondaryColor));
+            .copyWith(secondary: Theme.of(context).primaryColorLight));
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -178,16 +181,16 @@ class _EventInputState extends State<EventInput> {
             icon: Icon(
               Icons.arrow_back_ios_rounded,
             ),
-            color: AppTheme.colors.secondaryColor,
+            color: Theme.of(context).primaryColorLight,
             iconSize: 40,
             onPressed: () => {showAlertDialog(context)}
             // 2
             ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color.fromARGB(255, 39, 39, 39),
         title: Text(
           !widget.creation ? 'Edit event ' : 'Add event',
           style: TextStyle(
-            color: AppTheme.colors.secondaryColor,
+            color: Theme.of(context).primaryColorLight,
             fontSize: 30,
             fontFamily: 'BalooBhai',
           ),
@@ -259,7 +262,7 @@ class _EventInputState extends State<EventInput> {
                       Text(
                         "Title",
                         style: TextStyle(
-                          color: AppTheme.colors.secondaryColor,
+                          color: Theme.of(context).primaryColorLight,
                           fontSize: 15,
                           fontFamily: 'BalooBhai',
                         ),
@@ -274,7 +277,7 @@ class _EventInputState extends State<EventInput> {
                       return null;
                     },
                     style: TextStyle(
-                      color: AppTheme.colors.secondaryColor,
+                      color: Theme.of(context).primaryColorLight,
                       fontSize: 15,
                       fontFamily: 'BalooBhai2',
                     ),
@@ -283,17 +286,17 @@ class _EventInputState extends State<EventInput> {
                       hintStyle: TextStyle(color: Colors.grey),
                       hintText: 'Enter title',
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).scaffoldBackgroundColor,
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppTheme.colors.secondaryColor,
+                          color: Theme.of(context).primaryColorLight,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),
@@ -316,7 +319,7 @@ class _EventInputState extends State<EventInput> {
                       Text(
                         "Category",
                         style: TextStyle(
-                          color: AppTheme.colors.secondaryColor,
+                          color: Theme.of(context).primaryColorLight,
                           fontSize: 15,
                           fontFamily: 'BalooBhai',
                         ),
@@ -327,11 +330,11 @@ class _EventInputState extends State<EventInput> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color: AppTheme.colors
-                              .secondaryColor, //                   <--- border color
+                          color: Theme.of(context)
+                              .primaryColorLight, //                   <--- border color
                           width: 1.5,
                         ),
-                        color: Colors.white,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.circular(10)),
 
                     // dropdown below..
@@ -377,7 +380,7 @@ class _EventInputState extends State<EventInput> {
                       Text(
                         "Comments",
                         style: TextStyle(
-                          color: AppTheme.colors.secondaryColor,
+                          color: Theme.of(context).primaryColorLight,
                           fontSize: 15,
                           fontFamily: 'BalooBhai',
                         ),
@@ -395,7 +398,7 @@ class _EventInputState extends State<EventInput> {
                       return null;
                     },
                     style: TextStyle(
-                      color: AppTheme.colors.secondaryColor,
+                      color: Theme.of(context).primaryColorLight,
                       fontSize: 15,
                       fontFamily: 'BalooBhai2',
                     ),
@@ -404,17 +407,17 @@ class _EventInputState extends State<EventInput> {
                       hintText: 'Enter description',
                       hintStyle: TextStyle(color: Colors.grey),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).scaffoldBackgroundColor,
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppTheme.colors.secondaryColor,
+                          color: Theme.of(context).primaryColorLight,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0)),

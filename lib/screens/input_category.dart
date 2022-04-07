@@ -55,7 +55,7 @@ class _CategoryInputState extends State<CategoryInput> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: AppTheme.colors.secondaryColor,
+        color: Theme.of(context).primaryColorLight,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -63,7 +63,7 @@ class _CategoryInputState extends State<CategoryInput> {
           Text(
             _text,
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               fontSize: 20,
               fontFamily: 'BalooBhai2',
             ),
@@ -111,7 +111,6 @@ class _CategoryInputState extends State<CategoryInput> {
             .copyWith(secondary: AppTheme.colors.secondaryColor));
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 100,
@@ -119,16 +118,16 @@ class _CategoryInputState extends State<CategoryInput> {
             icon: Icon(
               Icons.arrow_back_ios_rounded,
             ),
-            color: AppTheme.colors.secondaryColor,
+            color: Colors.white,
             iconSize: 40,
             onPressed: () => Navigator.pop(context)
             // 2
             ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color.fromARGB(255, 39, 39, 39),
         title: Text(
           widget.creation ? "Create category" : "Modify category",
           style: TextStyle(
-            color: AppTheme.colors.secondaryColor,
+            color: Colors.white,
             fontSize: 25,
             fontFamily: 'BalooBhai',
           ),
@@ -181,7 +180,7 @@ class _CategoryInputState extends State<CategoryInput> {
                 icon: Icon(
                   Icons.more_vert,
                   size: 30,
-                  color: AppTheme.colors.secondaryColor,
+                  color: Colors.white,
                 ),
                 itemBuilder: (_) => const <PopupMenuItem<String>>[
                       PopupMenuItem<String>(
@@ -211,7 +210,7 @@ class _CategoryInputState extends State<CategoryInput> {
                         Text(
                           "Category name",
                           style: TextStyle(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             fontSize: 15,
                             fontFamily: 'BalooBhai',
                           ),
@@ -226,7 +225,7 @@ class _CategoryInputState extends State<CategoryInput> {
                         return null;
                       },
                       style: TextStyle(
-                        color: AppTheme.colors.secondaryColor,
+                        color: Theme.of(context).primaryColorLight,
                         fontSize: 15,
                         fontFamily: 'BalooBhai2',
                       ),
@@ -235,17 +234,17 @@ class _CategoryInputState extends State<CategoryInput> {
                         hintText: 'Enter name of the category',
                         hintStyle: TextStyle(color: Colors.grey),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppTheme.colors.secondaryColor,
+                              color: Theme.of(context).primaryColorLight,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
@@ -264,7 +263,7 @@ class _CategoryInputState extends State<CategoryInput> {
                         Text(
                           "Category emoji",
                           style: TextStyle(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             fontSize: 15,
                             fontFamily: 'BalooBhai',
                           ),
@@ -279,7 +278,7 @@ class _CategoryInputState extends State<CategoryInput> {
                         return null;
                       },
                       style: TextStyle(
-                        color: AppTheme.colors.secondaryColor,
+                        color: Theme.of(context).primaryColorLight,
                         fontSize: 15,
                         fontFamily: 'BalooBhai2',
                       ),
@@ -288,17 +287,17 @@ class _CategoryInputState extends State<CategoryInput> {
                         hintText: 'Enter an emoji which reprents the category',
                         hintStyle: TextStyle(color: Colors.grey),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: AppTheme.colors.secondaryColor,
+                              color: Theme.of(context).primaryColorLight,
                               width: 1.5,
                             ),
                             borderRadius: BorderRadius.circular(20.0)),
@@ -319,7 +318,7 @@ class _CategoryInputState extends State<CategoryInput> {
                         Text(
                           "Category color",
                           style: TextStyle(
-                            color: AppTheme.colors.secondaryColor,
+                            color: Theme.of(context).primaryColorLight,
                             fontSize: 15,
                             fontFamily: 'BalooBhai',
                           ),
@@ -348,8 +347,10 @@ class _CategoryInputState extends State<CategoryInput> {
                     ),*/
                       ]),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(width: 1.5),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        border: Border.all(
+                            width: 1.5,
+                            color: Theme.of(context).primaryColorLight),
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
