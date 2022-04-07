@@ -181,7 +181,7 @@ class _EventInputState extends State<EventInput> {
             icon: Icon(
               Icons.arrow_back_ios_rounded,
             ),
-            color: Theme.of(context).primaryColorLight,
+            color: Colors.white,
             iconSize: 40,
             onPressed: () => {showAlertDialog(context)}
             // 2
@@ -190,7 +190,7 @@ class _EventInputState extends State<EventInput> {
         title: Text(
           !widget.creation ? 'Edit event ' : 'Add event',
           style: TextStyle(
-            color: Theme.of(context).primaryColorLight,
+            color: Colors.white,
             fontSize: 30,
             fontFamily: 'BalooBhai',
           ),
@@ -270,6 +270,7 @@ class _EventInputState extends State<EventInput> {
                     ],
                   ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '';
@@ -388,6 +389,7 @@ class _EventInputState extends State<EventInput> {
                     ],
                   ),
                   TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.multiline,
                     minLines: 3,
                     maxLines: null,

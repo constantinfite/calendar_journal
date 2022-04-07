@@ -218,6 +218,7 @@ class _CategoryInputState extends State<CategoryInput> {
                       ],
                     ),
                     TextFormField(
+                      textCapitalization: TextCapitalization.sentences,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '';
