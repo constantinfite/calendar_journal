@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:calendar_journal/presentation/icons.dart';
 import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class EventInput extends StatefulWidget {
   const EventInput({
@@ -27,7 +28,7 @@ class _EventInputState extends State<EventInput> {
   int id = 0;
   final _eventNameController = TextEditingController();
   final _eventDescription = TextEditingController();
-  int _score = 0;
+  double _score = 0;
   String _category = "One";
   var nowDate = DateTime.now().toUtc();
 
@@ -60,7 +61,7 @@ class _EventInputState extends State<EventInput> {
       id = widget.event.id!;
       _eventNameController.text = widget.event.name!;
       _eventDescription.text = widget.event.description!;
-      _score = widget.event.score!;
+      _score = widget.event.score!.toDouble();
       _category = widget.event.category!;
       //nowDate = DateTime.fromMillisecondsSinceEpoch(time, isUtc: true);widget.event.datetime!;
       print(_category);
@@ -210,7 +211,7 @@ class _EventInputState extends State<EventInput> {
                     _event.description = _eventDescription.text;
                     _event.datetime = nowDate.millisecondsSinceEpoch;
                     _event.category = _category;
-                    _event.score = _score;
+                    _event.score = _score.toInt();
                     await _eventService.saveEvent(_event);
                     _showToast("Event created");
                     Navigator.pop(context);
@@ -229,6 +230,7 @@ class _EventInputState extends State<EventInput> {
                     _event.name = _eventNameController.text;
                     _event.description = _eventDescription.text;
                     _event.datetime = widget.event.datetime;
+                    _event.score = widget.event.score;
                     _event.category = _category;
                     await _eventService.updateEvent(_event);
                     Navigator.pop(context);
@@ -428,8 +430,46 @@ class _EventInputState extends State<EventInput> {
                 ],
               ),
               SizedBox(
-                height: 50,
-              )
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "Score",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai',
+                        ),
+                      ),
+                    ],
+                  ),
+                  RatingBar.builder(
+                    initialRating: _score,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    itemCount: 5,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: AppTheme.colors.greenColor,
+                    ),
+                    onRatingUpdate: (rating) {
+                      setState(() {
+                        _score = rating;
+                      });
+                    },
+                  )
+                ],
+              ),
+
               /*DropdownButtonFormField(
                 value: _category,
                 decoration: InputDecoration(

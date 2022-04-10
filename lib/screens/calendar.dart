@@ -427,6 +427,9 @@ class _StatsScreenState extends State<StatsScreen> {
                     itemBuilder: (context, index) {
                       return cardEvent(_selectedEvents[index]);
                     })),
+            SizedBox(
+              height: 10,
+            )
           ],
         ),
         floatingActionButton: SpeedDial(
@@ -543,6 +546,17 @@ class _StatsScreenState extends State<StatsScreen> {
                     fontSize: 20,
                     fontFamily: 'BalooBhai',
                     color: Theme.of(context).primaryColorLight),
+              ),
+              trailing: Text(
+                event.score.toString(),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'BalooBhai2',
+                  color: Theme.of(context).primaryColorLight,
+                ),
               ),
               subtitle: Text(
                 datesecondToMinuteHour(event.datetime),
