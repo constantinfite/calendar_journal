@@ -168,6 +168,8 @@ class _StatsScreenState extends State<StatsScreen> {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
+
+        _event.datetime = _focusedDay.millisecondsSinceEpoch;
       });
 
       _selectedEvents = _getEventsFromDay(selectedDay);
@@ -547,16 +549,22 @@ class _StatsScreenState extends State<StatsScreen> {
                     fontFamily: 'BalooBhai',
                     color: Theme.of(context).primaryColorLight),
               ),
-              trailing: Text(
-                event.score.toString(),
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontFamily: 'BalooBhai2',
-                  color: Theme.of(context).primaryColorLight,
-                ),
+              trailing: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(
+                    event.score.toString(),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'BalooBhai2',
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                  ),
+                  Icon(
+                    Icons.star_rounded,
+                    color: AppTheme.colors.greenColor,
+                  ),
+                ],
               ),
               subtitle: Text(
                 datesecondToMinuteHour(event.datetime),
@@ -575,7 +583,9 @@ class _StatsScreenState extends State<StatsScreen> {
                 width: 50.0,
                 height: 50.0,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Color.fromARGB(255, 105, 105, 105)
+                      : Color.fromARGB(255, 230, 230, 230),
                   shape: BoxShape.circle,
                 ),
                 child: Text(

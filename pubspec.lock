@@ -118,6 +118,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_rating_bar:
     dependency: "direct main"
     description:
@@ -125,6 +130,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  flutter_rounded_date_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_rounded_date_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   flutter_speed_dial:
     dependency: "direct main"
     description:
