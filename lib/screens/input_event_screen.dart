@@ -29,7 +29,8 @@ class _EventInputState extends State<EventInput> {
   final _eventNameController = TextEditingController();
   final _eventDescription = TextEditingController();
   double _score = 0;
-  String _category = "Climbing";
+  late String _category = "";
+
   var nowDate = DateTime.now().toUtc();
   TimeOfDay selectedTime = TimeOfDay.now();
 
@@ -45,9 +46,13 @@ class _EventInputState extends State<EventInput> {
 
   List<String> nameList = <String>[];
 
+  List<String> items = ['Item1', 'Item 2'];
+  String? selectedItem = 'Item 2';
+
   @override
   void initState() {
-    super.initState();
+    print(_category);
+
     getAllCategories();
     fToast = FToast();
     fToast.init(context);
@@ -70,7 +75,7 @@ class _EventInputState extends State<EventInput> {
       nowDate = DateTime.fromMillisecondsSinceEpoch(widget.event.datetime!);
       selectedTime = TimeOfDay.fromDateTime(
           DateTime.fromMillisecondsSinceEpoch(widget.event.datetime!));
-      print("category :" + _category);
+      //print(_category == "Climbing");
     });
   }
 
@@ -88,7 +93,9 @@ class _EventInputState extends State<EventInput> {
         //nameList.add(category['emoji'] + " " + category['name']);
       });
     });
-    _category = _categoryList[0].name!;
+    if (widget.creation) {
+      _category = _categoryList[0].name!;
+    }
   }
 
   _showToast(_text) {
@@ -500,10 +507,11 @@ class _EventInputState extends State<EventInput> {
                     // dropdown below..
                     child: DropdownButton<String>(
                       value: _category,
+
                       onChanged: (String? value) {
                         setState(() {
                           _category = value!;
-                          print("setstate = " + _category);
+                          print("setstate :" + _category);
                         });
                       },
                       items: _categoryList
