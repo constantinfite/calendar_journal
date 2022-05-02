@@ -78,7 +78,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => HomeScreen()))),
-        toolbarHeight: 100,
+        toolbarHeight: 70,
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 39, 39, 39),
         title: Text(

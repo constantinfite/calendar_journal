@@ -113,7 +113,7 @@ class _CategoryInputState extends State<CategoryInput> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        toolbarHeight: 100,
+        toolbarHeight: 70,
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
@@ -204,9 +204,6 @@ class _CategoryInputState extends State<CategoryInput> {
                   children: [
                     Row(
                       children: [
-                        SizedBox(
-                          width: 15,
-                        ),
                         Text(
                           "Category name",
                           style: TextStyle(
@@ -217,38 +214,41 @@ class _CategoryInputState extends State<CategoryInput> {
                         ),
                       ],
                     ),
-                    TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColorLight,
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
-                      ),
-                      controller: _categoryNameController,
-                      decoration: InputDecoration(
-                        hintText: 'Enter name of the category',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Theme.of(context).scaffoldBackgroundColor,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColorLight,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(20.0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '';
+                          }
+                          return null;
+                        },
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai2',
                         ),
-                        enabledBorder: OutlineInputBorder(
+                        controller: _categoryNameController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter name of the category',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Theme.of(context).primaryColorLight,
                               width: 1.5,
                             ),
-                            borderRadius: BorderRadius.circular(20.0)),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColorLight,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(15.0)),
+                        ),
                       ),
                     ),
                   ],
@@ -258,9 +258,6 @@ class _CategoryInputState extends State<CategoryInput> {
                   children: [
                     Row(
                       children: [
-                        SizedBox(
-                          width: 15,
-                        ),
                         Text(
                           "Category emoji",
                           style: TextStyle(
@@ -271,37 +268,41 @@ class _CategoryInputState extends State<CategoryInput> {
                         ),
                       ],
                     ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColorLight,
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
-                      ),
-                      controller: _categoryEmojiController,
-                      decoration: InputDecoration(
-                        hintText: 'Enter an emoji which reprents the category',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Theme.of(context).scaffoldBackgroundColor,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColorLight,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(20.0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '';
+                          }
+                          return null;
+                        },
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai2',
                         ),
-                        enabledBorder: OutlineInputBorder(
+                        controller: _categoryEmojiController,
+                        decoration: InputDecoration(
+                          hintText:
+                              'Enter an emoji which represents the category',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Theme.of(context).primaryColorLight,
                               width: 1.5,
                             ),
-                            borderRadius: BorderRadius.circular(20.0)),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColorLight,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(15.0)),
+                        ),
                       ),
                     ),
                   ],
@@ -313,9 +314,6 @@ class _CategoryInputState extends State<CategoryInput> {
                   children: [
                     Row(
                       children: [
-                        SizedBox(
-                          width: 15,
-                        ),
                         Text(
                           "Category color",
                           style: TextStyle(
@@ -326,33 +324,36 @@ class _CategoryInputState extends State<CategoryInput> {
                         ),
                       ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(children: [
-                        BlockPicker(
-                          pickerColor: _color,
-                          onColorChanged: changeColor,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(children: [
+                          BlockPicker(
+                            pickerColor: _color,
+                            onColorChanged: changeColor,
+                          ),
+                          /* SizedBox(
+                        height: 150,
+                        child: ListTile(
+                            title: BlockPicker(
+                          pickerColor: Colors.red, //default color
+                          onColorChanged: (Color color) {
+                            //on color picked
+                            setState(() {
+                              _color = color;
+                            });
+                          },
+                        )),
+                      ),*/
+                        ]),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          border: Border.all(
+                              width: 1.5,
+                              color: Theme.of(context).primaryColorLight),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        /* SizedBox(
-                      height: 150,
-                      child: ListTile(
-                          title: BlockPicker(
-                        pickerColor: Colors.red, //default color
-                        onColorChanged: (Color color) {
-                          //on color picked
-                          setState(() {
-                            _color = color;
-                          });
-                        },
-                      )),
-                    ),*/
-                      ]),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        border: Border.all(
-                            width: 1.5,
-                            color: Theme.of(context).primaryColorLight),
-                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
                   ],

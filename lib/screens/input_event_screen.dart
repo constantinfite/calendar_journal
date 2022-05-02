@@ -46,13 +46,8 @@ class _EventInputState extends State<EventInput> {
 
   List<String> nameList = <String>[];
 
-  List<String> items = ['Item1', 'Item 2'];
-  String? selectedItem = 'Item 2';
-
   @override
   void initState() {
-    print(_category);
-
     getAllCategories();
     fToast = FToast();
     fToast.init(context);
@@ -75,7 +70,6 @@ class _EventInputState extends State<EventInput> {
       nowDate = DateTime.fromMillisecondsSinceEpoch(widget.event.datetime!);
       selectedTime = TimeOfDay.fromDateTime(
           DateTime.fromMillisecondsSinceEpoch(widget.event.datetime!));
-      //print(_category == "Climbing");
     });
   }
 
@@ -204,7 +198,7 @@ class _EventInputState extends State<EventInput> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        toolbarHeight: 100,
+        toolbarHeight: 70,
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
@@ -287,64 +281,62 @@ class _EventInputState extends State<EventInput> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0),
-                          child: Text(
-                            "Date",
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColorLight,
-                              fontSize: 15,
-                              fontFamily: 'BalooBhai',
-                            ),
+                        Text(
+                          "Date",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                            fontSize: 15,
+                            fontFamily: 'BalooBhai',
                           ),
                         ),
-                        Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Theme.of(context)
-                                      .primaryColorLight, //                   <--- border color
-                                  width: 1.5,
-                                ),
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(15)),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 20, 0),
+                          child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .primaryColorLight, //                   <--- border color
+                                    width: 1.5,
+                                  ),
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(15)),
 
-                            // dropdown below..
-                            child: GestureDetector(
-                              onTap: () async {
-                                DateTime? newDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: nowDate,
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2300));
-                                if (newDate == null) {
-                                  return;
-                                }
-                                setState(() {
-                                  nowDate = DateTime(
-                                      newDate.year,
-                                      newDate.month,
-                                      newDate.day,
-                                      selectedTime.hour,
-                                      selectedTime.minute);
-                                });
-                              },
-                              child: Text(
-                                formattedDate(nowDate),
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                  fontSize: 15,
-                                  fontFamily: 'BalooBhai2',
+                              // dropdown below..
+                              child: GestureDetector(
+                                onTap: () async {
+                                  DateTime? newDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: nowDate,
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime(2300));
+                                  if (newDate == null) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    nowDate = DateTime(
+                                        newDate.year,
+                                        newDate.month,
+                                        newDate.day,
+                                        selectedTime.hour,
+                                        selectedTime.minute);
+                                  });
+                                },
+                                child: Text(
+                                  formattedDate(nowDate),
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColorLight,
+                                    fontSize: 15,
+                                    fontFamily: 'BalooBhai2',
+                                  ),
                                 ),
-                              ),
-                            )),
+                              )),
+                        ),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    width: 50,
                   ),
                   Expanded(
                     flex: 1,
@@ -352,7 +344,7 @@ class _EventInputState extends State<EventInput> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5.0),
                           child: Text(
                             "Time",
                             style: TextStyle(
@@ -363,6 +355,7 @@ class _EventInputState extends State<EventInput> {
                           ),
                         ),
                         Container(
+                            width: double.infinity,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
@@ -400,6 +393,7 @@ class _EventInputState extends State<EventInput> {
                               },
                               child: Text(
                                 formattedTime(selectedTime),
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Theme.of(context).primaryColorLight,
                                   fontSize: 15,
@@ -511,7 +505,6 @@ class _EventInputState extends State<EventInput> {
                       onChanged: (String? value) {
                         setState(() {
                           _category = value!;
-                          print("setstate :" + _category);
                         });
                       },
                       items: _categoryList
