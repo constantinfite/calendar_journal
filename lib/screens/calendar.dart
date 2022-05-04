@@ -82,7 +82,29 @@ class _StatsScreenState extends State<StatsScreen> {
     super.dispose();
   }
 
-  Color colorCategoryDot(category) {
+  Color colorCategoryDotScore(score) {
+    if (score == 5) {
+      return Color.fromARGB(255, 87, 227, 44);
+    }
+    if (score == 4) {
+      return Color.fromARGB(255, 183, 221, 41);
+    }
+    if (score == 3) {
+      return Color.fromARGB(255, 255, 226, 52);
+    }
+    if (score == 2) {
+      return Color.fromARGB(255, 255, 165, 52);
+    } else {
+      return Color.fromARGB(255, 255, 69, 69);
+    }
+    /*for (var cat in _categoryList) {
+      if (cat.name == category) {
+        color = Color(cat.color!);
+      }
+    }*/
+  }
+
+  Color colorCategoryDotCategory(category) {
     Color color = Colors.blue;
     for (var cat in _categoryList) {
       if (cat.name == category) {
@@ -330,8 +352,8 @@ class _StatsScreenState extends State<StatsScreen> {
                       decoration: BoxDecoration(
                         // provide your own condition here
                         color: event.category! == _categorySelected.name
-                            ? Color(_categorySelected.color!)
-                            : colorCategoryDot(event.category),
+                            ? colorCategoryDotScore(event.score)
+                            : colorCategoryDotCategory(event.category),
                         shape: BoxShape.circle,
                       ),
                     );
@@ -497,18 +519,35 @@ class _StatsScreenState extends State<StatsScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                child: Text(
-                    _categoryList[index].name!.length > 15
-                        ? '${_categoryList[index].name!.substring(0, 15)}...'
-                        : _categoryList[index].name!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    softWrap: false,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: colorTextCategory(index),
-                      fontFamily: 'BalooBhai',
-                    )),
+                child: Row(
+                  children: [
+                    Container(
+                      //transformAlignment: transf,
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color:
+                            colorCategoryDotCategory(_categoryList[index].name),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                        _categoryList[index].name!.length > 15
+                            ? '${_categoryList[index].name!.substring(0, 15)}...'
+                            : _categoryList[index].name!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: colorTextCategory(index),
+                          fontFamily: 'BalooBhai',
+                        )),
+                  ],
+                ),
               ),
             ]),
       ),

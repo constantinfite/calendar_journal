@@ -28,7 +28,7 @@ class _EventInputState extends State<EventInput> {
   int id = 0;
   final _eventNameController = TextEditingController();
   final _eventDescription = TextEditingController();
-  double _score = 0;
+  double _score = 3;
   late String _category = "";
 
   var nowDate = DateTime.now().toUtc();
