@@ -2,6 +2,20 @@
 
 A new Flutter project.
 
+## change without losing data
+
+`flutter build apk `
+
+`adb install build/app/outputs/flutter-apk/app.apk`
+
+change also in android/app/build.gradle
+> buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+           //signingConfig signingConfigs.release
+        }
+    }
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

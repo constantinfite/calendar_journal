@@ -628,7 +628,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 height: 50.0,
                 decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? Color.fromARGB(255, 105, 105, 105)
+                      ? Color.fromARGB(255, 113, 113, 113)
                       : Color.fromARGB(255, 230, 230, 230),
                   shape: BoxShape.circle,
                 ),
@@ -694,6 +694,18 @@ class _StatsScreenState extends State<StatsScreen> {
               //mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  emojiCategory(event.category),
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: 'BalooBhai2',
+                    color: AppTheme.colors.secondaryColor,
+                  ),
+                ),
+                SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     event.name,
