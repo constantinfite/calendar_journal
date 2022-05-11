@@ -182,9 +182,11 @@ class _EventInputState extends State<EventInput> {
   }
 
   String formattedTime(selectedTime) {
-    DateTime date = DateFormat.jm().parse(selectedTime.format(context));
+    //print(selectedTime);
+    //DateTime date = DateFormat.jm().parse(selectedTime.format(context));
 
-    return DateFormat("HH:mm").format(date);
+    return selectedTime.format(context);
+    //return DateFormat("HH:mm").format(date);
   }
 
   @override

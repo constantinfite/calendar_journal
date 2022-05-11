@@ -521,19 +521,24 @@ class _StatsScreenState extends State<StatsScreen> {
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                 child: Row(
                   children: [
-                    Container(
-                      //transformAlignment: transf,
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color:
-                            colorCategoryDotCategory(_categoryList[index].name),
-                        shape: BoxShape.circle,
+                    if (_categoryList[index].name != "All")
+                      Row(
+                        children: [
+                          Container(
+                            //transformAlignment: transf,
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: colorCategoryDotCategory(
+                                  _categoryList[index].name),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
                     Text(
                         _categoryList[index].name!.length > 15
                             ? '${_categoryList[index].name!.substring(0, 15)}...'
