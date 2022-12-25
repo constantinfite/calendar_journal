@@ -13,6 +13,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({Key? key}) : super(key: key);
@@ -198,6 +199,79 @@ class _StatsScreenState extends State<StatsScreen> {
     }
   }
 
+  onEditEvent(context, int id) async {
+    event = await _eventService.readEventById(id);
+
+    setState(() {
+      _event.id = event[0]['id'];
+      _event.name = event[0]['name'] ?? 'No name';
+      _event.description = event[0]['description'] ?? 'No description';
+      _event.score = event[0]['score'] ?? 0;
+      _event.category = event[0]['category'];
+      _event.datetime = event[0]['datetime'];
+    });
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => EventInput(creation: false, event: _event)))
+        .then((_) {
+      getTask1().then((val) => setState(() {
+            _events = val;
+
+            var _correctDate = DateTime.utc(
+                _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+
+            _selectedEvents = _getEventsFromDay(_correctDate);
+            if (_categorySelected.name != "All") {
+              _selectedEvents = _selectedEvents
+                  .where((i) => i.category == _categorySelected.name)
+                  .toList();
+            }
+          }));
+      Navigator.pop(context);
+    });
+  }
+
+  onDeleteEvent(context, int id) {
+    Future.delayed(
+        const Duration(seconds: 0),
+        () => showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text("Are you sure to delete the event"),
+                  actions: [
+                    TextButton(
+                      child: Text("Cancel"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    TextButton(
+                      child: Text("Continue"),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        await _eventService.deleteEvent(id);
+                        getTask1().then((val) => setState(() {
+                              _events = val;
+
+                              var _correctDate = DateTime.utc(
+                                  _selectedDay!.year,
+                                  _selectedDay!.month,
+                                  _selectedDay!.day);
+
+                              _selectedEvents = _getEventsFromDay(_correctDate);
+                              if (_categorySelected.name != "All") {
+                                _selectedEvents = _selectedEvents
+                                    .where((i) =>
+                                        i.category == _categorySelected.name)
+                                    .toList();
+                              }
+                            }));
+                      },
+                    ),
+                  ],
+                )));
+  }
+
   choiceAction(context, int id, choice) async {
     if (choice == "delete") {
       Future.delayed(
@@ -352,7 +426,7 @@ class _StatsScreenState extends State<StatsScreen> {
                       decoration: BoxDecoration(
                         // provide your own condition here
                         color: event.category! == _categorySelected.name
-                            ? colorCategoryDotScore(event.score)
+                            ? colorCategoryDotCategory(event.category)
                             : colorCategoryDotCategory(event.category),
                         shape: BoxShape.circle,
                       ),
@@ -429,7 +503,7 @@ class _StatsScreenState extends State<StatsScreen> {
             /* ..._getEventsFromDay(selectedDay)
               .map((Event event) => cardExercice(event)),*/
             Container(
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Row(children: [
                 Expanded(
                   child: Container(
@@ -449,7 +523,30 @@ class _StatsScreenState extends State<StatsScreen> {
                 child: ListView.builder(
                     itemCount: _selectedEvents.length,
                     itemBuilder: (context, index) {
-                      return cardEvent(_selectedEvents[index]);
+                      return Slidable(
+                          startActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) => onEditEvent(
+                                    context, _selectedEvents[index].id!),
+                                label: 'Edit',
+                                backgroundColor: AppTheme.colors.greenColor,
+                              ),
+                            ],
+                          ),
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) => onDeleteEvent(
+                                    context, _selectedEvents[index].id!),
+                                label: 'Delete',
+                                // backgroundColor: Colors.red,
+                              )
+                            ],
+                          ),
+                          child: cardEvent(_selectedEvents[index]));
                     })),
             SizedBox(
               height: 10,
@@ -574,10 +671,10 @@ class _StatsScreenState extends State<StatsScreen> {
         );
       },
       child: Card(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
           color: Theme.of(context).primaryColorDark,
           shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(0),
               borderSide: BorderSide(color: Colors.transparent)),
           elevation: 0,
           child: Padding(
@@ -675,19 +772,6 @@ class _StatsScreenState extends State<StatsScreen> {
                       fontFamily: 'BalooBhai2',
                       color: AppTheme.colors.greenColor),
                 ),
-                PopupMenuButton(
-                    icon: Icon(
-                      Icons.more_vert,
-                      size: 30,
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                    itemBuilder: (_) => const <PopupMenuItem<String>>[
-                          PopupMenuItem(child: Text('Edit'), value: 'edit'),
-                          PopupMenuItem(child: Text('Delete'), value: 'delete'),
-                        ],
-                    onSelected: (value) {
-                      choiceAction(context, event.id, value as String);
-                    })
               ],
             ),
             Row(

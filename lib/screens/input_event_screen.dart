@@ -163,7 +163,7 @@ class _EventInputState extends State<EventInput> {
         continueButton,
       ],
     );
-
+    FocusManager.instance.primaryFocus?.unfocus();
     // show the dialog
     showDialog(
       context: context,
@@ -189,111 +189,172 @@ class _EventInputState extends State<EventInput> {
     //return DateFormat("HH:mm").format(date);
   }
 
+  Future<bool> _onWillPop() async {
+    return (showAlertDialog(context)) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).copyWith(
-        dividerColor: Colors.transparent,
-        unselectedWidgetColor: Theme.of(context).primaryColorLight,
-        colorScheme: ColorScheme.fromSwatch()
-            .copyWith(secondary: Theme.of(context).primaryColorLight));
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: 70,
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-            ),
-            color: Colors.white,
-            iconSize: 40,
-            onPressed: () => {showAlertDialog(context)}
-            // 2
-            ),
-        backgroundColor: Color.fromARGB(255, 39, 39, 39),
-        title: Text(
-          !widget.creation ? 'Edit event ' : 'Add event',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontFamily: 'BalooBhai',
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.check),
-              color: AppTheme.colors.greenColor,
-              iconSize: 50,
-              onPressed: () async {
-                // creation of exercice
-                if (widget.creation) {
-                  if (_formKey.currentState!.validate()) {
-                    final _event = Event();
-                    _event.name = _eventNameController.text;
-                    _event.description = _eventDescription.text;
-                    _event.datetime = nowDate.millisecondsSinceEpoch;
-                    _event.category = _category;
-                    _event.score = _score.toInt();
-                    await _eventService.saveEvent(_event);
-                    _showToast("Event created");
-                    Navigator.pop(context);
-                  } else {
-                    fToast.removeQueuedCustomToasts();
-                    _showToast("Empty value");
-                  }
-                }
-                // modification of exercice
-                else {
-                  if (_formKey.currentState!.validate()
-                      //&& _preparationTime != 0
-                      ) {
-                    final _event = Event();
-                    _event.id = id;
-                    _event.name = _eventNameController.text;
-                    _event.description = _eventDescription.text;
-                    _event.datetime = nowDate.millisecondsSinceEpoch;
-                    _event.score = _score.toInt();
-                    _event.category = _category;
-                    await _eventService.updateEvent(_event);
-                    Navigator.pop(context);
-
-                    print(_event.category);
-
-                    _showToast("Event modified");
-                  } else {
-                    _showToast("Empty value");
-                  }
-                }
-              }
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 70,
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_rounded,
+              ),
+              color: Colors.white,
+              iconSize: 40,
+              onPressed: () => {showAlertDialog(context)}
               // 2
               ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Form(
-            key: _formKey,
-            child: Column(children: <Widget>[
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Date",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                            fontSize: 15,
-                            fontFamily: 'BalooBhai',
+          backgroundColor: Color.fromARGB(255, 39, 39, 39),
+          title: Text(
+            !widget.creation ? 'Edit event ' : 'Add event',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              fontFamily: 'BalooBhai',
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.check),
+                color: AppTheme.colors.greenColor,
+                iconSize: 50,
+                onPressed: () async {
+                  // creation of exercice
+                  if (widget.creation) {
+                    if (_formKey.currentState!.validate()) {
+                      final _event = Event();
+                      _event.name = _eventNameController.text;
+                      _event.description = _eventDescription.text;
+                      _event.datetime = nowDate.millisecondsSinceEpoch;
+                      _event.category = _category;
+                      _event.score = _score.toInt();
+                      await _eventService.saveEvent(_event);
+                      _showToast("Event created");
+                      Navigator.pop(context);
+                    } else {
+                      fToast.removeQueuedCustomToasts();
+                      _showToast("Empty value");
+                    }
+                  }
+                  // modification of exercice
+                  else {
+                    if (_formKey.currentState!.validate()
+                        //&& _preparationTime != 0
+                        ) {
+                      final _event = Event();
+                      _event.id = id;
+                      _event.name = _eventNameController.text;
+                      _event.description = _eventDescription.text;
+                      _event.datetime = nowDate.millisecondsSinceEpoch;
+                      _event.score = _score.toInt();
+                      _event.category = _category;
+                      await _eventService.updateEvent(_event);
+                      Navigator.pop(context);
+                      _showToast("Event modified");
+                    } else {
+                      _showToast("Empty value");
+                    }
+                  }
+                }
+                // 2
+                ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Date",
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColorLight,
+                              fontSize: 15,
+                              fontFamily: 'BalooBhai',
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 20, 0),
-                          child: Container(
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 5, 20, 0),
+                            child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Theme.of(context)
+                                          .primaryColorLight, //                   <--- border color
+                                      width: 1.5,
+                                    ),
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(15)),
+
+                                // dropdown below..
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    DateTime? newDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: nowDate,
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime(2300));
+                                    if (newDate == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      nowDate = DateTime(
+                                          newDate.year,
+                                          newDate.month,
+                                          newDate.day,
+                                          selectedTime.hour,
+                                          selectedTime.minute);
+                                    });
+                                  },
+                                  child: Text(
+                                    formattedDate(nowDate),
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).primaryColorLight,
+                                      fontSize: 15,
+                                      fontFamily: 'BalooBhai2',
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 5.0),
+                            child: Text(
+                              "Time",
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColorLight,
+                                fontSize: 15,
+                                fontFamily: 'BalooBhai',
+                              ),
+                            ),
+                          ),
+                          Container(
                               width: double.infinity,
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 10),
@@ -310,45 +371,113 @@ class _EventInputState extends State<EventInput> {
                               // dropdown below..
                               child: GestureDetector(
                                 onTap: () async {
-                                  DateTime? newDate = await showDatePicker(
-                                      context: context,
-                                      initialDate: nowDate,
-                                      firstDate: DateTime(1900),
-                                      lastDate: DateTime(2300));
-                                  if (newDate == null) {
-                                    return;
+                                  final TimeOfDay? timeOfDay =
+                                      await showTimePicker(
+                                    context: context,
+                                    initialTime: selectedTime,
+                                  );
+                                  if (timeOfDay != null &&
+                                      timeOfDay != selectedTime) {
+                                    setState(() {
+                                      nowDate = DateTime(
+                                          nowDate.year,
+                                          nowDate.month,
+                                          nowDate.day,
+                                          timeOfDay.hour,
+                                          timeOfDay.minute);
+
+                                      selectedTime =
+                                          TimeOfDay.fromDateTime(nowDate);
+                                    });
                                   }
-                                  setState(() {
-                                    nowDate = DateTime(
-                                        newDate.year,
-                                        newDate.month,
-                                        newDate.day,
-                                        selectedTime.hour,
-                                        selectedTime.minute);
-                                  });
                                 },
                                 child: Text(
-                                  formattedDate(nowDate),
+                                  formattedTime(selectedTime),
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColorLight,
                                     fontSize: 15,
                                     fontFamily: 'BalooBhai2',
                                   ),
                                 ),
-                              )),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Title",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                            fontSize: 15,
+                            fontFamily: 'BalooBhai',
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '';
+                          }
+                          return null;
+                        },
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai2',
+                        ),
+                        controller: _eventNameController,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          hintStyle: TextStyle(color: Colors.grey),
+                          hintText: 'Enter title',
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColorLight,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColorLight,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(15.0)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5.0),
+                          padding: const EdgeInsets.only(bottom: 5),
                           child: Text(
-                            "Time",
+                            "Category",
                             style: TextStyle(
                               color: Theme.of(context).primaryColorLight,
                               fontSize: 15,
@@ -356,319 +485,160 @@ class _EventInputState extends State<EventInput> {
                             ),
                           ),
                         ),
-                        Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Theme.of(context)
-                                      .primaryColorLight, //                   <--- border color
-                                  width: 1.5,
-                                ),
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(15)),
-
-                            // dropdown below..
-                            child: GestureDetector(
-                              onTap: () async {
-                                final TimeOfDay? timeOfDay =
-                                    await showTimePicker(
-                                  context: context,
-                                  initialTime: selectedTime,
-                                );
-                                if (timeOfDay != null &&
-                                    timeOfDay != selectedTime) {
-                                  setState(() {
-                                    nowDate = DateTime(
-                                        nowDate.year,
-                                        nowDate.month,
-                                        nowDate.day,
-                                        timeOfDay.hour,
-                                        timeOfDay.minute);
-
-                                    selectedTime =
-                                        TimeOfDay.fromDateTime(nowDate);
-                                  });
-                                }
-                              },
-                              child: Text(
-                                formattedTime(selectedTime),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                  fontSize: 15,
-                                  fontFamily: 'BalooBhai2',
-                                ),
-                              ),
-                            ))
                       ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Title",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColorLight,
-                          fontSize: 15,
-                          fontFamily: 'BalooBhai',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '';
-                        }
-                        return null;
-                      },
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColorLight,
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
-                      ),
-                      controller: _eventNameController,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                        hintStyle: TextStyle(color: Colors.grey),
-                        hintText: 'Enter title',
-                        filled: true,
-                        fillColor: Theme.of(context).scaffoldBackgroundColor,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColorLight,
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .primaryColorLight, //                   <--- border color
                             width: 1.5,
                           ),
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Theme.of(context).primaryColorLight,
-                              width: 1.5,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(15)),
+
+                      // dropdown below..
+                      child: DropdownButton<String>(
+                        value: _category,
+
+                        onChanged: (String? value) {
+                          setState(() {
+                            _category = value!;
+                          });
+                        },
+                        items: _categoryList
+                            .map<DropdownMenuItem<String>>((Category category) {
+                          return DropdownMenuItem<String>(
+                            value: category.name,
+                            child: Row(
+                              children: [
+                                Text(
+                                  category.emoji! + "  ",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColorLight,
+                                    fontSize: 15,
+                                    fontFamily: 'BalooBhai2',
+                                  ),
+                                ),
+                                Text(
+                                  category.name!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColorLight,
+                                    fontSize: 15,
+                                    fontFamily: 'BalooBhai2',
+                                  ),
+                                )
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(15.0)),
+                          );
+                        }).toList(),
+
+                        // add extra sugar..
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 42,
+                        underline: SizedBox(),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Category",
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Comments",
                           style: TextStyle(
                             color: Theme.of(context).primaryColorLight,
                             fontSize: 15,
                             fontFamily: 'BalooBhai',
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context)
-                              .primaryColorLight, //                   <--- border color
-                          width: 1.5,
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 3,
+                        maxLines: null,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontSize: 15,
+                          fontFamily: 'BalooBhai2',
                         ),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(15)),
-
-                    // dropdown below..
-                    child: DropdownButton<String>(
-                      value: _category,
-
-                      onChanged: (String? value) {
+                        controller: _eventDescription,
+                        decoration: InputDecoration(
+                          hintText: 'Enter description',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColorLight,
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColorLight,
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(20.0)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            "Score",
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColorLight,
+                              fontSize: 15,
+                              fontFamily: 'BalooBhai',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    RatingBar.builder(
+                      initialRating: _score,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star_rounded,
+                        color: AppTheme.colors.greenColor,
+                      ),
+                      onRatingUpdate: (rating) {
                         setState(() {
-                          _category = value!;
+                          _score = rating;
                         });
                       },
-                      items: _categoryList
-                          .map<DropdownMenuItem<String>>((Category category) {
-                        return DropdownMenuItem<String>(
-                          value: category.name,
-                          child: Row(
-                            children: [
-                              Text(
-                                category.emoji! + "  ",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                  fontSize: 15,
-                                  fontFamily: 'BalooBhai2',
-                                ),
-                              ),
-                              Text(
-                                category.name!,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                  fontSize: 15,
-                                  fontFamily: 'BalooBhai2',
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      }).toList(),
-
-                      // add extra sugar..
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 42,
-                      underline: SizedBox(),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Comments",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColorLight,
-                          fontSize: 15,
-                          fontFamily: 'BalooBhai',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
-                      keyboardType: TextInputType.multiline,
-                      minLines: 3,
-                      maxLines: null,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColorLight,
-                        fontSize: 15,
-                        fontFamily: 'BalooBhai2',
-                      ),
-                      controller: _eventDescription,
-                      decoration: InputDecoration(
-                        hintText: 'Enter description',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Theme.of(context).scaffoldBackgroundColor,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColorLight,
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Theme.of(context).primaryColorLight,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(20.0)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Score",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                            fontSize: 15,
-                            fontFamily: 'BalooBhai',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  RatingBar.builder(
-                    initialRating: _score,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: false,
-                    itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star_rounded,
-                      color: AppTheme.colors.greenColor,
-                    ),
-                    onRatingUpdate: (rating) {
-                      setState(() {
-                        _score = rating;
-                      });
-                    },
-                  )
-                ],
-              ),
-
-              /*DropdownButtonFormField(
-                value: _category,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppTheme.colors.cyanColor, width: 2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
+                    )
+                  ],
                 ),
-                dropdownColor: Colors.white,
-                items: nameList.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                hint: Text('Category'),
-                onChanged: (String? value) {
-                  setState(() {
-                    _category = value!;
-                  });
-                },
-              ),*/
-            ]),
+              ]),
+            ),
           ),
         ),
       ),
