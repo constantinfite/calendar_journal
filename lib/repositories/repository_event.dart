@@ -25,7 +25,7 @@ class Repository {
   //Read data from Table
   readData(table) async {
     var connection = await database;
-    return await connection.query(table);
+    return await connection.query(table, orderBy: "datetime DESC",);
   }
 
   //Read data from Table by Id

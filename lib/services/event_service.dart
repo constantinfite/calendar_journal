@@ -23,6 +23,7 @@ class EventService {
     return await _repository.readData('events');
   }
 
+
   //Read data from table by Id
   readEventById(eventId) async {
     return await _repository.readDataById('events', eventId);

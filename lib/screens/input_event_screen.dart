@@ -182,7 +182,6 @@ class _EventInputState extends State<EventInput> {
   }
 
   String formattedTime(selectedTime) {
-    //print(selectedTime);
     //DateTime date = DateFormat.jm().parse(selectedTime.format(context));
 
     return selectedTime.format(context);

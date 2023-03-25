@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 import 'package:calendar_journal/screens/input_event_screen.dart';
 import 'package:calendar_journal/src/app.dart';
 import 'package:flutter/services.dart';
@@ -14,15 +15,16 @@ import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class StatsScreen extends StatefulWidget {
-  const StatsScreen({Key? key}) : super(key: key);
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatsScreen> createState() => _StatsScreenState();
+  State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _StatsScreenState extends State<StatsScreen> {
+class _CalendarScreenState extends State<CalendarScreen> {
   CalendarFormat format = CalendarFormat.month;
 
   DateTime _focusedDay = DateTime.now();
@@ -162,7 +164,6 @@ class _StatsScreenState extends State<StatsScreen> {
         _eventList.add(eventModel);
       });
     });
-    //print(_eventList.length);
     return _eventList;
   }
 
@@ -172,8 +173,6 @@ class _StatsScreenState extends State<StatsScreen> {
     for (int i = 0; i < events.length; i++) {
       var date = DateTime.fromMillisecondsSinceEpoch(events[i].datetime!);
       var createDate = DateTime.utc(date.year, date.month, date.day);
-      /*print("createDate");
-      print(createDate);*/
 
       var original = mapFetch[createDate];
 
@@ -353,11 +352,7 @@ class _StatsScreenState extends State<StatsScreen> {
 
   showAlertDialog(
     BuildContext context,
-  ) {
-    // set up the buttons
-
-    // set up the AlertDialog
-  }
+  ) {}
 
   Color colorCategory(index) {
     if (Theme.of(context).brightness == Brightness.dark) {
@@ -388,6 +383,48 @@ class _StatsScreenState extends State<StatsScreen> {
       } else {
         return Colors.white;
       }
+    }
+  }
+
+  onPressed() async {
+    var status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+    var status1 = await Permission.storage.status;
+    if (!status1.isGranted) {
+      await Permission.storage.request();
+    }
+    try {
+      File ourDBFile = File(
+          '/data/user/0/com.constantin.calendar_journal/app_flutter/db_eventlist_sqflite');
+      Directory? folderPathForDBFile =
+          Directory('/storage/emulated/0/Android/CategoryList/');
+      await folderPathForDBFile.create();
+      await ourDBFile.copy('/storage/emulated/0/Android/CategoryList/event.db');
+      print("ok");
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  loadDb() async {
+    try {
+      var status = await Permission.manageExternalStorage.status;
+      if (!status.isGranted) {
+        await Permission.manageExternalStorage.request();
+      }
+      var status1 = await Permission.storage.status;
+      if (!status1.isGranted) {
+        await Permission.storage.request();
+      }
+      File savedDBFile =
+          File('/storage/emulated/0/Android/CategoryList/calendar.db');
+      await savedDBFile.copy(
+          '/data/user/0/com.constantin.calendar_journal/app_flutter/calendar.db');
+      print('ok');
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -550,7 +587,8 @@ class _StatsScreenState extends State<StatsScreen> {
                     })),
             SizedBox(
               height: 10,
-            )
+            ),
+            ElevatedButton(onPressed: loadDb, child: const Text("exportDB"))
           ],
         ),
         floatingActionButton: SpeedDial(

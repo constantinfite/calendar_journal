@@ -1,6 +1,6 @@
 import 'package:calendar_journal/models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:calendar_journal/screens/calendar.dart';
+import 'package:calendar_journal/screens/calendar_screen.dart';
 import 'package:calendar_journal/screens/home_screen.dart';
 import 'package:calendar_journal/screens/categories_screen.dart';
 import 'package:calendar_journal/services/category_service.dart';
@@ -57,7 +57,6 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
                       Container(
                         child: FlatButton(
                           onPressed: () => {
-                            print('Set Light Theme'),
                             theme.setLightMode(),
                           },
                           child: Text('Set Light Theme'),
@@ -66,7 +65,6 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
                       Container(
                         child: FlatButton(
                           onPressed: () => {
-                            print('Set Dark theme'),
                             theme.setDarkMode(),
                           },
                           child: Text('Set Dark theme'),

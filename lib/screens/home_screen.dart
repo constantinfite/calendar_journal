@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/presentation/icons.dart';
 import 'package:calendar_journal/helpers/drawer_navigation.dart';
-import 'package:calendar_journal/screens/calendar.dart';
+import 'package:calendar_journal/screens/calendar_screen.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
-import 'package:calendar_journal/screens/list_exercice_screen.dart';
+import 'package:calendar_journal/screens/list_event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,9 +14,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<Widget> screens = [StatsScreen(), ListExerciceScreen()];
+  final List<Widget> screens = [CalendarScreen(), ListEventScreen()];
 
-  String _title = "EXERCICES";
+  String _title = "";
 
   @override
   void initState() {
@@ -39,16 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         break;
     }
-  }
-
-  String formatDuration(int totalSeconds) {
-    final duration = Duration(seconds: totalSeconds);
-    final minutes = duration.inMinutes;
-    final seconds = totalSeconds % 60;
-
-    final minutesString = '$minutes'.padLeft(1, '0');
-    final secondsString = '$seconds'.padLeft(2, '0');
-    return '$minutesString min $secondsString s';
   }
 
   @override

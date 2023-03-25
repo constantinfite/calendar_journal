@@ -146,7 +146,6 @@ class _CategoryInputState extends State<CategoryInput> {
                     _category.name = _categoryNameController.text;
                     _category.emoji = _categoryEmojiController.text;
                     _category.color = _color.value;
-                    print(_category.color);
                     await _categoryService.saveCategory(_category);
 
                     _showToast("Category created");
