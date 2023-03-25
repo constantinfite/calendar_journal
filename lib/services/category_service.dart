@@ -1,5 +1,5 @@
 import 'package:calendar_journal/models/category.dart';
-import 'package:calendar_journal/repositories/repository_category.dart';
+import 'package:calendar_journal/repositories/repository_calendar.dart';
 
 class CategoryService {
   late Repository _repository;

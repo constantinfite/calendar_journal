@@ -1,9 +1,5 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:io';
 import 'package:calendar_journal/screens/input_event_screen.dart';
-import 'package:calendar_journal/src/app.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/events.dart';
@@ -15,7 +11,7 @@ import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:anim_search_bar/anim_search_bar.dart';
 
 class ListEventScreen extends StatefulWidget {
   const ListEventScreen({Key? key}) : super(key: key);
@@ -39,7 +35,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
   List<Event> _events = <Event>[];
 
   int id = 0;
-  String _value = "";
+  TextEditingController textController = TextEditingController();
 
   List<Category> _categoryList = <Category>[];
   late var _categorySelected = Category();
@@ -126,7 +122,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
   }
 
   Future<List<Event>> getAllEvents() async {
-    var events = await _eventService.readEvents();
+    var events = await _eventService.readEvents(textController.text);
     List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {
@@ -296,31 +292,30 @@ class _ListEventScreenState extends State<ListEventScreen> {
     }
   }
 
-//   Future<void> exportDatabase() async {
-//   final String databasesPath = await getDatabasesPath();
-//   final String databasePath = "$databasesPath/db_categorylist_sqflite.db";
-
-//   // Open the database
-//   final Database database = await openDatabase(databasePath);
-
-//   // Create a backup file
-//   const String backupPath = "/storage/emulated/0";
-//   final File backupFile = File(backupPath);
-
-//   // Copy the database file to the backup file
-//   await backupFile.create(recursive: true);
-//   await backupFile.writeAsBytes(database.readOnly().readBytesSync());
-
-//   // Close the database
-//   await database.close();
-// }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: AppTheme.colors.backgroundColor,
       body: Column(
         children: [
+          Padding(
+            padding:
+                const EdgeInsets.only( right: 10, left: 10),
+            child: AnimSearchBar(
+              width: 400,
+              textController: textController,
+              onSuffixTap: () {
+                setState(() {
+                  textController.clear();
+                });
+              },
+              onSubmitted: (String value) {
+                getAllEvents().then((val) => setState(() {
+                  _events = val;
+                }));
+              },
+            ),
+          ),
           //Text(createDate),
           Expanded(
               child: ListView.builder(

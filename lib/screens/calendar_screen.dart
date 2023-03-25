@@ -150,7 +150,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<List<Event>> getAllEvents() async {
-    var events = await _eventService.readEvents();
+    var events = await _eventService.readEvents("");
     List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {
@@ -386,7 +386,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
   }
 
-  onPressed() async {
+  exportDB() async {
     var status = await Permission.manageExternalStorage.status;
     if (!status.isGranted) {
       await Permission.manageExternalStorage.request();

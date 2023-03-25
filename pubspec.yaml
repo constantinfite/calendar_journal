@@ -47,6 +47,7 @@ dependencies:
   flutter_rounded_date_picker: ^2.0.2
   flutter_slidable: ^1.3.2
   permission_handler: ^10.2.0
+  anim_search_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:

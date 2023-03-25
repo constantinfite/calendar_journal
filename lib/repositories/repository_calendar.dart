@@ -13,7 +13,7 @@ class Repository {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _dataBaseConnection?.setDatabaseCategory();
+    _database = await _dataBaseConnection?.setDatabaseCalendar();
     return _database!;
   }
 
@@ -25,7 +25,12 @@ class Repository {
   //Read data from Table
   readData(table) async {
     var connection = await database;
-    return await connection.query(table);
+    return await connection.query(table,);
+  }
+
+  readEvents(table, research) async {
+    var connection = await database;
+    return await connection.rawQuery("SELECT * FROM "  + table +" WHERE name LIKE '%"+ research +"%' ORDER BY datetime DESC");
   }
 
   //Read data from Table by Id

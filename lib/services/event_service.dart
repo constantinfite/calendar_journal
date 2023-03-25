@@ -1,5 +1,5 @@
 import 'package:calendar_journal/models/events.dart';
-import 'package:calendar_journal/repositories/repository_event.dart';
+import 'package:calendar_journal/repositories/repository_calendar.dart';
 
 class EventService {
   late Repository _repository;
@@ -19,10 +19,9 @@ class EventService {
   }
 
   // Read data from table
-  readEvents() async {
-    return await _repository.readData('events');
+  readEvents(search) async {
+    return await _repository.readEvents('events', search);
   }
-
 
   //Read data from table by Id
   readEventById(eventId) async {
