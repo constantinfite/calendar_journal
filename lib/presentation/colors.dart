@@ -12,7 +12,7 @@ class AppColors {
   final newRedColor = const Color.fromARGB(255, 234, 82, 110);
   final newOrangeColor = const Color.fromARGB(255, 255, 137, 91);
   final newBlueColor = const Color.fromARGB(255, 37, 206, 209);
-  final greenColor = const Color.fromARGB(255, 55, 226, 175);
+  final greenColor = const Color.fromARGB(255, 116, 206, 210);
 
   const AppColors();
 }

@@ -85,7 +85,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           "Categories",
           style: TextStyle(
             color: Colors.white,
-            fontSize: 35,
+            fontSize: 30,
             fontFamily: 'BalooBhai',
           ),
         ),
@@ -98,42 +98,55 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: GridView.count(
         // Create a grid with 2 columns. If you change the scrollDirection to
         // horizontal, this produces 2 rows.
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        padding: const EdgeInsets.all(20),
+        crossAxisCount: 3,
+        mainAxisSpacing: 40,
+        crossAxisSpacing: 0,
+        padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
         // Generate 100 widgets that display their index in the List.
         children: List.generate(_categoryList.length, (index) {
-          return GestureDetector(
-            onTap: () => {_editCategory(context, _categoryList[index].id)},
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(_categoryList[index].color ?? 000000),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    _categoryList[index].emoji!,
-                    style: TextStyle(
-                      color: AppTheme.colors.secondaryColor,
-                      fontSize: 50,
-                      fontFamily: 'BalooBhai',
+          return Column(
+            children: [
+              GestureDetector(
+                onTap: () => {_editCategory(context, _categoryList[index].id)},
+                child: Container(
+                  // width: 100.0,
+                  // height: 100.0,
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: Color(_categoryList[index].color ??
+                          000000), //                   <--- border color
+                      width: 2.0,
                     ),
                   ),
-                  Text(
-                    _categoryList[index].name!,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontFamily: 'BalooBhai',
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        _categoryList[index].emoji!,
+                        style: TextStyle(
+                          color: AppTheme.colors.secondaryColor,
+                          fontSize: 40,
+                          fontFamily: 'BalooBhai2',
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+              Text(
+                _categoryList[index].name!,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                  fontSize: 20,
+                  fontFamily: 'BalooBhai2',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           );
         }),
       ),

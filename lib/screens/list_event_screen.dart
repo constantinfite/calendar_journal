@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:calendar_journal/screens/input_event_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_journal/models/events.dart';
@@ -11,7 +12,6 @@ import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:anim_search_bar/anim_search_bar.dart';
 
 class ListEventScreen extends StatefulWidget {
   const ListEventScreen({Key? key}) : super(key: key);
@@ -46,11 +46,10 @@ class _ListEventScreenState extends State<ListEventScreen> {
     _selectedDay = _focusedDay;
     getAllCategories();
 
-    getAllEvents().then((val) => setState(() {
+    getAllEvents("").then((val) => setState(() {
           _events = val;
         }));
   }
-
 
   @override
   void dispose() {
@@ -121,8 +120,8 @@ class _ListEventScreenState extends State<ListEventScreen> {
     _categorySelected = _categoryList[0];
   }
 
-  Future<List<Event>> getAllEvents() async {
-    var events = await _eventService.readEvents(textController.text);
+  Future<List<Event>> getAllEvents(String value) async {
+    var events = await _eventService.readEvents(value);
     List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {
@@ -154,7 +153,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
         .push(MaterialPageRoute(
             builder: (context) => EventInput(creation: false, event: _event)))
         .then((_) {
-      getAllEvents().then((val) => setState(() {
+      getAllEvents("").then((val) => setState(() {
             _events = val;
 
             var _correctDate = DateTime.utc(
@@ -183,7 +182,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                       onPressed: () async {
                         Navigator.pop(context);
                         await _eventService.deleteEvent(id);
-                        getAllEvents().then((val) => setState(() {
+                        getAllEvents("").then((val) => setState(() {
                               _events = val;
 
                               var _correctDate = DateTime.utc(
@@ -218,7 +217,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                           Navigator.pop(context);
                           await _eventService.deleteEvent(id);
                           Navigator.pop(context);
-                          getAllEvents().then((val) => setState(() {
+                          getAllEvents("").then((val) => setState(() {
                                 _events = val;
 
                                 var _correctDate = DateTime.utc(
@@ -249,7 +248,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
           .push(MaterialPageRoute(
               builder: (context) => EventInput(creation: false, event: _event)))
           .then((_) {
-        getAllEvents().then((val) => setState(() {
+        getAllEvents("").then((val) => setState(() {
               _events = val;
 
               var _correctDate = DateTime.utc(
@@ -279,78 +278,176 @@ class _ListEventScreenState extends State<ListEventScreen> {
   Color colorTextCategory(index) {
     if (Theme.of(context).brightness == Brightness.light) {
       if (_categoryList[index].name! == _categorySelected.name) {
-        return Colors.white;
-      } else {
         return Color.fromARGB(255, 39, 39, 39);
+      } else {
+        return Colors.white;
       }
     } else {
       if (_categoryList[index].name! == _categorySelected.name) {
-        return Color.fromARGB(255, 39, 39, 39);
-      } else {
         return Colors.white;
+      } else {
+        return Color.fromARGB(255, 39, 39, 39);
       }
     }
+  }
+
+  void updateList(String value) {
+    getAllEvents(value).then((val) => setState(() {
+          _events = val;
+        }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: AppTheme.colors.backgroundColor,
-      body: Column(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only( right: 10, left: 10),
-            child: AnimSearchBar(
-              width: 400,
-              textController: textController,
-              onSuffixTap: () {
-                setState(() {
-                  textController.clear();
-                });
-              },
-              onSubmitted: (String value) {
-                getAllEvents().then((val) => setState(() {
-                  _events = val;
-                }));
-              },
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    onChanged: (value) => updateList(value),
+                    style:
+                        TextStyle(color: Theme.of(context).primaryColorLight),
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Theme.of(context).primaryColorDark,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide.none),
+                        hintText: "Find events",
+                        prefixIcon: Icon(Icons.search),
+                        prefixIconColor: Theme.of(context).primaryColor),
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColorDark,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: IconButton(
+                      icon: Icon(Icons.filter_alt, color: Colors.white),
+                      onPressed: () => {}),
+                )
+              ],
             ),
-          ),
-          //Text(createDate),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: _events.length,
-                  itemBuilder: (context, index) {
-                    return Slidable(
-                        startActionPane: ActionPane(
-                          motion: const StretchMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) =>
-                                  onEditEvent(context, _events[index].id!),
-                              label: 'Edit',
-                              backgroundColor: AppTheme.colors.greenColor,
-                            ),
-                          ],
-                        ),
-                        endActionPane: ActionPane(
-                          motion: const StretchMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) =>
-                                  onDeleteEvent(context, _events[index].id!),
-                              label: 'Delete',
-                              // backgroundColor: Colors.red,
-                            )
-                          ],
-                        ),
-                        child: cardEvent(_events[index]));
-                  })),
+            Container(
+                // child: Text(
+                //   "List event",
+                //   style: TextStyle(
+                //     fontSize: 25,
+                //     fontFamily: 'BalooBhai',
+                //     color: Theme.of(context).primaryColorLight,
+                //   ),
+                // ),
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+            //Text(createDate),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: _events.length,
+                    itemBuilder: (context, index) {
+                      return Slidable(
+                          startActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) =>
+                                    onEditEvent(context, _events[index].id!),
+                                label: 'Edit',
+                                backgroundColor: AppTheme.colors.greenColor,
+                              ),
+                            ],
+                          ),
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) =>
+                                    onDeleteEvent(context, _events[index].id!),
+                                label: 'Delete',
+                                // backgroundColor: Colors.red,
+                              )
+                            ],
+                          ),
+                          child: cardEvent(_events[index]));
+                    })),
 
-          /* ..._getEventsFromDay(selectedDay)
-              .map((Event event) => cardExercice(event)),*/
-        ],
+            /* ..._getEventsFromDay(selectedDay)
+                .map((Event event) => cardExercice(event)),*/
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget buildCategory({required index}) {
+    return GestureDetector(
+      onTap: () async {
+        HapticFeedback.mediumImpact();
+
+        setState(() {
+          _categorySelected = _categoryList[index];
+
+          if (_categorySelected.name != "All") {
+            _events = _events
+                .where((i) => i.category == _categorySelected.name)
+                .toList();
+          }
+        });
+      },
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: Column(
+                children: [
+                  Container(
+                    // width: 100.0,
+                    // height: 100.0,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(15.0),
+                    decoration: BoxDecoration(
+                      color: colorCategory(index),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Color(_categoryList[index].color ??
+                            000000), //                   <--- border color
+                        width: 2.0,
+                      ),
+                    ),
+                    child: Text(
+                      _categoryList[index].emoji ?? '',
+                      style: TextStyle(
+                        color: AppTheme.colors.secondaryColor,
+                        fontSize: 40,
+                        fontFamily: 'BalooBhai2',
+                      ),
+                    ),
+                  ),
+                  Text(
+                      _categoryList[index].name!.length > 15
+                          ? '${_categoryList[index].name!.substring(0, 15)}...'
+                          : _categoryList[index].name!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: colorTextCategory(index),
+                        fontFamily: 'BalooBhai',
+                      )),
+                ],
+              ),
+            ),
+          ]),
     );
   }
 
@@ -369,10 +466,10 @@ class _ListEventScreenState extends State<ListEventScreen> {
         );
       },
       child: Card(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
           color: Theme.of(context).primaryColorDark,
           shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(0),
+              borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide(color: Colors.transparent)),
           elevation: 0,
           child: Padding(

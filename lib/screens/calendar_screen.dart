@@ -25,7 +25,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  CalendarFormat format = CalendarFormat.month;
+  CalendarFormat format = CalendarFormat.twoWeeks;
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -357,9 +357,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Color colorCategory(index) {
     if (Theme.of(context).brightness == Brightness.dark) {
       if (_categoryList[index].name! == _categorySelected.name) {
-        return Colors.white;
+        return AppTheme.colors.greenColor;
       } else {
-        return Color.fromARGB(255, 39, 39, 39);
+        return Theme.of(context).primaryColorDark;
       }
     } else {
       if (_categoryList[index].name! == _categorySelected.name) {
@@ -431,165 +431,163 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: AppTheme.colors.backgroundColor,
-        body: Column(
-          children: [
-            //Text(createDate),
-
-            Container(
-              margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(6),
+        // backgroundColor: AppTheme.colors.backgroundColor,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          child: Column(
+            children: [
+              //Text(createDate),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: Row(children: [
+                  Expanded(
+                    child: Container(
+                      height: 50.0,
+                      color: Colors.transparent,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _categoryList.length,
+                          itemBuilder: (context, index) {
+                            return buildCategory(index: index);
+                          }),
+                    ),
+                  ),
+                ]),
               ),
-              child: TableCalendar(
-                focusedDay: _selectedDay!,
-                firstDay: DateTime(1990),
-                lastDay: DateTime(2050),
-                calendarFormat: format,
-                onFormatChanged: (CalendarFormat _format) {
-                  setState(() {
-                    format = _format;
-                  });
-                },
-                calendarBuilders: CalendarBuilders(
-                  singleMarkerBuilder: (context, date, event) {
-                    (event as Event);
-                    return Container(
-                      height: 8.0,
-                      width: 8.0,
-                      margin: const EdgeInsets.all(0.5),
-                      decoration: BoxDecoration(
-                        // provide your own condition here
-                        color: event.category! == _categorySelected.name
-                            ? colorCategoryDotCategory(event.category)
-                            : colorCategoryDotCategory(event.category),
-                        shape: BoxShape.circle,
-                      ),
-                    );
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: TableCalendar(
+                  focusedDay: _selectedDay!,
+                  firstDay: DateTime(1990),
+                  lastDay: DateTime(2050),
+                  calendarFormat: format,
+                  onFormatChanged: (CalendarFormat _format) {
+                    setState(() {
+                      format = _format;
+                    });
                   },
-                  dowBuilder: (context, day) {
-                    /*if (day.weekday == DateTime.sunday) {
-                      final text = DateFormat.E().format(day);
-
-                      return Center(
-                        child: Text(
-                          text,
-                          style: TextStyle(color: Colors.red),
+                  calendarBuilders: CalendarBuilders(
+                    singleMarkerBuilder: (context, date, event) {
+                      (event as Event);
+                      return Container(
+                        height: 8.0,
+                        width: 8.0,
+                        margin: const EdgeInsets.all(0.5),
+                        decoration: BoxDecoration(
+                          // provide your own condition here
+                          color: event.category! == _categorySelected.name
+                              ? colorCategoryDotCategory(event.category)
+                              : colorCategoryDotCategory(event.category),
+                          shape: BoxShape.circle,
                         ),
                       );
-                    }*/
+                    },
+                    dowBuilder: (context, day) {
+                      /*if (day.weekday == DateTime.sunday) {
+                        final text = DateFormat.E().format(day);
+
+                        return Center(
+                          child: Text(
+                            text,
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      }*/
+                    },
+                  ),
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  daysOfWeekVisible: true,
+                  onPageChanged: (focusedDay) {
+                    focusedDay = focusedDay;
                   },
-                ),
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                daysOfWeekVisible: true,
-                onPageChanged: (focusedDay) {
-                  focusedDay = focusedDay;
-                },
 
-                //Day Changed
-                onDaySelected: _onDaySelected,
-                selectedDayPredicate: (DateTime date) {
-                  return isSameDay(_selectedDay, date);
-                },
+                  //Day Changed
+                  onDaySelected: _onDaySelected,
+                  selectedDayPredicate: (DateTime date) {
+                    return isSameDay(_selectedDay, date);
+                  },
 
-                eventLoader: (day) {
-                  return _getEventsFromDay(day);
-                },
-
-                //To style the Calendar
-                calendarStyle: CalendarStyle(
-                  isTodayHighlighted: true,
-                  selectedDecoration: BoxDecoration(
-                    color: AppTheme.colors.greenColor,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5.0),
+                  eventLoader: (day) {
+                    return _getEventsFromDay(day);
+                  },
+                  //To style the Calendar
+                  calendarStyle: CalendarStyle(
+                    isTodayHighlighted: true,
+                    selectedDecoration: BoxDecoration(
+                      color: AppTheme.colors.greenColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    selectedTextStyle:
+                        TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    todayDecoration: BoxDecoration(
+                      color: Color.fromARGB(255, 212, 212, 212),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    todayTextStyle: TextStyle(color: Colors.white),
+                    defaultDecoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    weekendDecoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                   ),
-                  selectedTextStyle:
-                      TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                  todayDecoration: BoxDecoration(
-                    color: Color.fromARGB(255, 212, 212, 212),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  todayTextStyle: TextStyle(color: Colors.white),
-                  defaultDecoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  weekendDecoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: true,
-                  titleCentered: true,
-                  formatButtonShowsNext: false,
-                  formatButtonDecoration: BoxDecoration(
-                    color: AppTheme.colors.greenColor,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  formatButtonTextStyle: TextStyle(
-                    color: Colors.white,
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: true,
+                    titleCentered: true,
+                    formatButtonShowsNext: false,
+                    formatButtonDecoration: BoxDecoration(
+                      color: AppTheme.colors.greenColor,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    formatButtonTextStyle: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            /* ..._getEventsFromDay(selectedDay)
-              .map((Event event) => cardExercice(event)),*/
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Row(children: [
-                Expanded(
-                  child: Container(
-                    height: 50.0,
-                    color: Colors.transparent,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _categoryList.length,
-                        itemBuilder: (context, index) {
-                          return buildCategory(index: index);
-                        }),
-                  ),
-                ),
-              ]),
-            ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: _selectedEvents.length,
-                    itemBuilder: (context, index) {
-                      return Slidable(
-                          startActionPane: ActionPane(
-                            motion: const StretchMotion(),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) => onEditEvent(
-                                    context, _selectedEvents[index].id!),
-                                label: 'Edit',
-                                backgroundColor: AppTheme.colors.greenColor,
-                              ),
-                            ],
-                          ),
-                          endActionPane: ActionPane(
-                            motion: const StretchMotion(),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) => onDeleteEvent(
-                                    context, _selectedEvents[index].id!),
-                                label: 'Delete',
-                                // backgroundColor: Colors.red,
-                              )
-                            ],
-                          ),
-                          child: cardEvent(_selectedEvents[index]));
-                    })),
-            SizedBox(
-              height: 10,
-            ),
-            ElevatedButton(onPressed: loadDb, child: const Text("exportDB"))
-          ],
+
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: _selectedEvents.length,
+                      itemBuilder: (context, index) {
+                        return Slidable(
+                            startActionPane: ActionPane(
+                              motion: const StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) => onEditEvent(
+                                      context, _selectedEvents[index].id!),
+                                  label: 'Edit',
+                                  backgroundColor: AppTheme.colors.greenColor,
+                                ),
+                              ],
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) => onDeleteEvent(
+                                      context, _selectedEvents[index].id!),
+                                  label: 'Delete',
+                                  // backgroundColor: Colors.red,
+                                )
+                              ],
+                            ),
+                            child: cardEvent(_selectedEvents[index]));
+                      })),
+
+              // ElevatedButton(onPressed: loadDb, child: const Text("exportDB"))
+            ],
+          ),
         ),
         floatingActionButton: SpeedDial(
           icon: Icons.add,
@@ -656,28 +654,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                 child: Row(
                   children: [
-                    if (_categoryList[index].name != "All")
-                      Row(
-                        children: [
-                          Container(
-                            //transformAlignment: transf,
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: colorCategoryDotCategory(
-                                  _categoryList[index].name),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                        ],
-                      ),
-                    Text(
-                        _categoryList[index].name!.length > 15
-                            ? '${_categoryList[index].name!.substring(0, 15)}...'
-                            : _categoryList[index].name!,
+                    Text(_categoryList[index].emoji ?? '♾️',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         softWrap: false,
@@ -709,10 +686,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         );
       },
       child: Card(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
           color: Theme.of(context).primaryColorDark,
           shape: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(0),
+              borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide(color: Colors.transparent)),
           elevation: 0,
           child: Padding(

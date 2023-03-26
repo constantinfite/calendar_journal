@@ -21,6 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    switch (_selectedIndex) {
+      case 0:
+        {
+          _title = 'Calendar';
+        }
+        break;
+      case 1:
+        {
+          _title = 'Events';
+        }
+        break;
+    }
   }
 
   void _onItemTapped(int index) {
@@ -35,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 1:
         {
-          _title = 'To do';
+          _title = 'Events';
         }
         break;
     }
@@ -44,14 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.colors.greenColor,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 39, 39, 39),
         centerTitle: true,
         title: Text(
-          "Calendar",
+          _title,
           style: TextStyle(
             color: AppTheme.colors.backgroundColor,
             fontSize: 30,
@@ -75,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(
               MyFlutterApp.noun_list,
             ),
-            label: 'Todo',
+            label: 'Events',
           ),
         ],
         currentIndex: _selectedIndex,

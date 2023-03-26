@@ -5,10 +5,10 @@ class ThemeNotifier with ChangeNotifier {
   final darkTheme = ThemeData(
     primarySwatch: Colors.grey,
     primaryColor: Color.fromARGB(255, 105, 105, 105),
-    scaffoldBackgroundColor: Color.fromARGB(255, 60, 60, 60),
+    scaffoldBackgroundColor: Color.fromARGB(255, 30, 35, 39),
     brightness: Brightness.dark,
     backgroundColor: Color.fromARGB(255, 0, 0, 0),
-    primaryColorDark: Color.fromARGB(255, 39, 39, 39),
+    primaryColorDark: Color.fromARGB(255, 46, 54, 59),
     dividerColor: Color.fromARGB(31, 7, 7, 7),
     primaryColorLight: Colors.white,
   );
@@ -21,7 +21,7 @@ class ThemeNotifier with ChangeNotifier {
       dividerColor: Color.fromARGB(255, 60, 60, 60),
       primaryColorDark: Colors.white,
       primaryColorLight: Color.fromARGB(255, 60, 60, 60),
-      scaffoldBackgroundColor: Color.fromARGB(255, 241, 241, 241));
+      scaffoldBackgroundColor: Color.fromARGB(255, 8, 10, 11));
 
   ThemeData _themeData = ThemeData(primaryColor: Colors.white);
   ThemeData getTheme() => _themeData;
