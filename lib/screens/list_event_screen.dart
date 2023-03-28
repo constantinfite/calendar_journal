@@ -13,6 +13,7 @@ import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:chips_choice/chips_choice.dart';
+import '../widgets/filter_list.dart';
 
 class ListEventScreen extends StatefulWidget {
   const ListEventScreen({Key? key}) : super(key: key);
@@ -326,7 +327,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                                   borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20))),
                               builder: (BuildContext context) {
-                                return filterList();
+                                return FilterList();
                               },
                             )
                           }),
@@ -526,64 +527,64 @@ class _ListEventScreenState extends State<ListEventScreen> {
     );
   }
 
-  Widget filterList() {
-    return SingleChildScrollView(
-      child: Container(
-        color: Theme.of(context).primaryColorDark,
-        //height: MediaQuery.of(context).size.height * 0.6,
-        padding: EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 1,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "Set Filters",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontFamily: 'BalooBhai',
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 30),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    "Category",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'BalooBhai',
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            ChipsChoice<String>.multiple(
-                value: _categoryListSelected,
-                onChanged: (val) => setState(() => _categoryListSelected = val),
-                choiceLoader: getCategory,
-                wrapped: true,
-                choiceStyle: C2ChipStyle.filled(
-                  selectedStyle: const C2ChipStyle(
-                    backgroundColor: Color.fromARGB(255, 116, 206, 210),
-                  ),
-                )),
-            SizedBox(height: 50),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget filterList() {
+  //   return SingleChildScrollView(
+  //     child: Container(
+  //       color: Theme.of(context).primaryColorDark,
+  //       //height: MediaQuery.of(context).size.height * 0.6,
+  //       padding: EdgeInsets.all(30),
+  //       width: MediaQuery.of(context).size.width * 1,
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         mainAxisAlignment: MainAxisAlignment.start,
+  //         children: <Widget>[
+  //           Row(
+  //             children: [
+  //               Expanded(
+  //                 child: Text(
+  //                   "Set Filters",
+  //                   textAlign: TextAlign.center,
+  //                   style: TextStyle(
+  //                     fontSize: 25,
+  //                     fontFamily: 'BalooBhai',
+  //                     color: Theme.of(context).primaryColorLight,
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //           SizedBox(height: 30),
+  //           Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Expanded(
+  //                 child: Text(
+  //                   "Category",
+  //                   style: TextStyle(
+  //                     fontSize: 20,
+  //                     fontFamily: 'BalooBhai',
+  //                     color: Theme.of(context).primaryColorLight,
+  //                   ),
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //           ChipsChoice<String>.multiple(
+  //               value: _categoryListSelected,
+  //               onChanged: (val) => setState(() => _categoryListSelected = val),
+  //               choiceLoader: getCategory,
+  //               wrapped: true,
+  //               choiceStyle: C2ChipStyle.filled(
+  //                 selectedStyle: const C2ChipStyle(
+  //                   backgroundColor: Color.fromARGB(255, 116, 206, 210),
+  //                 ),
+  //               )),
+  //           SizedBox(height: 50),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget bottomSheet(event) {
     return SingleChildScrollView(
