@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:calendar_journal/screens/input_event_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:calendar_journal/models/events.dart';
 import 'package:calendar_journal/services/event_service.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -12,6 +12,7 @@ import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:chips_choice/chips_choice.dart';
 
 class ListEventScreen extends StatefulWidget {
   const ListEventScreen({Key? key}) : super(key: key);
@@ -38,14 +39,21 @@ class _ListEventScreenState extends State<ListEventScreen> {
   TextEditingController textController = TextEditingController();
 
   List<Category> _categoryList = <Category>[];
+  List<String> _categoryListSelected = <String>[];
   late var _categorySelected = Category();
+
+  Future<List<C2Choice<String>>> getCategory() async {
+    return C2Choice.listFrom<String, Category>(
+        source: _categoryList,
+        value: (i, v) => v.name ?? "",
+        label: (i, v) => v.name ?? "");
+  }
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
     getAllCategories();
-
     getAllEvents("").then((val) => setState(() {
           _events = val;
         }));
@@ -54,38 +62,6 @@ class _ListEventScreenState extends State<ListEventScreen> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Color colorCategoryDotScore(score) {
-    if (score == 5) {
-      return Color.fromARGB(255, 87, 227, 44);
-    }
-    if (score == 4) {
-      return Color.fromARGB(255, 183, 221, 41);
-    }
-    if (score == 3) {
-      return Color.fromARGB(255, 255, 226, 52);
-    }
-    if (score == 2) {
-      return Color.fromARGB(255, 255, 165, 52);
-    } else {
-      return Color.fromARGB(255, 255, 69, 69);
-    }
-    /*for (var cat in _categoryList) {
-      if (cat.name == category) {
-        color = Color(cat.color!);
-      }
-    }*/
-  }
-
-  Color colorCategoryDotCategory(category) {
-    Color color = Colors.blue;
-    for (var cat in _categoryList) {
-      if (cat.name == category) {
-        color = Color(cat.color!);
-      }
-    }
-    return color;
   }
 
   String emojiCategory(category) {
@@ -297,6 +273,14 @@ class _ListEventScreenState extends State<ListEventScreen> {
         }));
   }
 
+  updateFilter(val) {
+    print(val);
+    setState(() => _categoryListSelected = val);
+    // getAllEvents('').then((val) => setState(() {
+    //       _events = val;
+    //     }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -316,7 +300,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                         filled: true,
                         fillColor: Theme.of(context).primaryColorDark,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(16.0),
                             borderSide: BorderSide.none),
                         hintText: "Find events",
                         prefixIcon: Icon(Icons.search),
@@ -324,29 +308,33 @@ class _ListEventScreenState extends State<ListEventScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: 20,
+                  width: 15,
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(16)),
                   child: IconButton(
                       icon: Icon(Icons.filter_alt, color: Colors.white),
-                      onPressed: () => {}),
+                      onPressed: () => {
+                            showMaterialModalBottomSheet(
+                              backgroundColor: Colors.transparent,
+                              barrierColor: Color.fromARGB(152, 0, 0, 0),
+                              context: context,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20))),
+                              builder: (BuildContext context) {
+                                return filterList();
+                              },
+                            )
+                          }),
                 )
               ],
             ),
-            Container(
-                // child: Text(
-                //   "List event",
-                //   style: TextStyle(
-                //     fontSize: 25,
-                //     fontFamily: 'BalooBhai',
-                //     color: Theme.of(context).primaryColorLight,
-                //   ),
-                // ),
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+            Container(margin: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+
             //Text(createDate),
             Expanded(
                 child: ListView.builder(
@@ -377,9 +365,6 @@ class _ListEventScreenState extends State<ListEventScreen> {
                           ),
                           child: cardEvent(_events[index]));
                     })),
-
-            /* ..._getEventsFromDay(selectedDay)
-                .map((Event event) => cardExercice(event)),*/
           ],
         ),
       ),
@@ -454,7 +439,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
   Widget cardEvent(event) {
     return GestureDetector(
       onTap: () {
-        showBarModalBottomSheet(
+        showMaterialModalBottomSheet(
           backgroundColor: Colors.transparent,
           barrierColor: Color.fromARGB(152, 0, 0, 0),
           context: context,
@@ -538,6 +523,65 @@ class _ListEventScreenState extends State<ListEventScreen> {
               ),
             ),
           )),
+    );
+  }
+
+  Widget filterList() {
+    return SingleChildScrollView(
+      child: Container(
+        color: Theme.of(context).primaryColorDark,
+        //height: MediaQuery.of(context).size.height * 0.6,
+        padding: EdgeInsets.all(30),
+        width: MediaQuery.of(context).size.width * 1,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "Set Filters",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'BalooBhai',
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 30),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Category",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'BalooBhai',
+                      color: Theme.of(context).primaryColorLight,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            ChipsChoice<String>.multiple(
+                value: _categoryListSelected,
+                onChanged: (val) => setState(() => _categoryListSelected = val),
+                choiceLoader: getCategory,
+                wrapped: true,
+                choiceStyle: C2ChipStyle.filled(
+                  selectedStyle: const C2ChipStyle(
+                    backgroundColor: Color.fromARGB(255, 116, 206, 210),
+                  ),
+                )),
+            SizedBox(height: 50),
+          ],
+        ),
+      ),
     );
   }
 

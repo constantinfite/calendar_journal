@@ -55,7 +55,7 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
                   return Row(
                     children: [
                       Container(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () => {
                             theme.setLightMode(),
                           },
@@ -63,7 +63,7 @@ class _DrawerNavigatonState extends State<DrawerNavigaton> {
                         ),
                       ),
                       Container(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () => {
                             theme.setDarkMode(),
                           },

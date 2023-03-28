@@ -5,7 +5,7 @@ class ThemeNotifier with ChangeNotifier {
   final darkTheme = ThemeData(
     primarySwatch: Colors.grey,
     primaryColor: Color.fromARGB(255, 105, 105, 105),
-    scaffoldBackgroundColor: Color.fromARGB(255, 30, 35, 39),
+    scaffoldBackgroundColor: Color.fromARGB(255, 33,33,49),
     brightness: Brightness.dark,
     backgroundColor: Color.fromARGB(255, 0, 0, 0),
     primaryColorDark: Color.fromARGB(255, 46, 54, 59),

@@ -13,7 +13,8 @@ import 'package:calendar_journal/presentation/app_theme.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:calendar_journal/services/category_service.dart';
 import 'package:calendar_journal/models/category.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart'
+    hide ModalBottomSheetRoute;
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -674,7 +675,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget cardEvent(event) {
     return GestureDetector(
       onTap: () {
-        showBarModalBottomSheet(
+        showMaterialModalBottomSheet(
           backgroundColor: Colors.transparent,
           barrierColor: Color.fromARGB(152, 0, 0, 0),
           context: context,
