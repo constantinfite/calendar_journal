@@ -19,8 +19,8 @@ class EventService {
   }
 
   // Read data from table
-  readEvents(search) async {
-    return await _repository.readEvents('events', search);
+  readEvents(search, List<String> categories ) async {
+    return await _repository.readEvents('events', search, categories);
   }
 
   //Read data from table by Id

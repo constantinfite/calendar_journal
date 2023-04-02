@@ -6,6 +6,12 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:calendar_journal/presentation/app_theme.dart';
 
 class FilterList extends StatefulWidget {
+  final Function(List<String>) onCategorySelectionChanged;
+  final List<String> categories;
+
+  const FilterList(
+      {required this.categories, required this.onCategorySelectionChanged});
+
   @override
   _FilterListState createState() => _FilterListState();
 }
@@ -19,6 +25,9 @@ class _FilterListState extends State<FilterList> {
   void initState() {
     super.initState();
     // getAllCategories();
+    setState(() {
+      _categoryListSelected = widget.categories;
+    });
   }
 
   getAllCategories() async {
@@ -92,6 +101,7 @@ class _FilterListState extends State<FilterList> {
               onChanged: (val) {
                 setState(() {
                   _categoryListSelected = val;
+                  widget.onCategorySelectionChanged(val);
                 });
               },
               choiceLoader: getCategory,

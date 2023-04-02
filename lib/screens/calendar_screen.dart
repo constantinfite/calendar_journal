@@ -151,7 +151,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<List<Event>> getAllEvents() async {
-    var events = await _eventService.readEvents("");
+    var events = await _eventService.readEvents("", []);
     List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {

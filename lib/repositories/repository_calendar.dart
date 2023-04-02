@@ -25,12 +25,35 @@ class Repository {
   //Read data from Table
   readData(table) async {
     var connection = await database;
-    return await connection.query(table,);
+    return await connection.query(
+      table,
+    );
   }
 
-  readEvents(table, research) async {
+  readEvents(table, research, List<String> categories) async {
     var connection = await database;
-    return await connection.rawQuery("SELECT * FROM "  + table +" WHERE name LIKE '%"+ research +"%' ORDER BY datetime DESC");
+    if (categories.isNotEmpty) {
+      String categoriesJoin =
+          categories.map((category) => "'$category'").join(", ");
+      // ignore: prefer_interpolation_to_compose_strings
+      return await connection.rawQuery("SELECT * FROM " +
+          table +
+          " WHERE name LIKE '%" +
+          research +
+          "%' and category IN (" +
+          categoriesJoin +
+          ") ORDER BY datetime DESC");
+    } else {
+      String categoriesJoin = "SELECT name FROM categories";
+      // ignore: prefer_interpolation_to_compose_strings
+      return await connection.rawQuery("SELECT * FROM " +
+          table +
+          " WHERE name LIKE '%" +
+          research +
+          "%' and category IN (" +
+          categoriesJoin +
+          ") ORDER BY datetime DESC");
+    }
   }
 
   //Read data from Table by Id

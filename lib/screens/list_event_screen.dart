@@ -43,11 +43,13 @@ class _ListEventScreenState extends State<ListEventScreen> {
   List<String> _categoryListSelected = <String>[];
   late var _categorySelected = Category();
 
-  Future<List<C2Choice<String>>> getCategory() async {
-    return C2Choice.listFrom<String, Category>(
-        source: _categoryList,
-        value: (i, v) => v.name ?? "",
-        label: (i, v) => v.name ?? "");
+  void _updateSelectedCategories(List<String> categories) {
+    setState(() {
+      _categoryListSelected = categories;
+    });
+    getAllEvents("", categories).then((val) => setState(() {
+          _events = val;
+        }));
   }
 
   @override
@@ -55,7 +57,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
     super.initState();
     _selectedDay = _focusedDay;
     getAllCategories();
-    getAllEvents("").then((val) => setState(() {
+    getAllEvents("", []).then((val) => setState(() {
           _events = val;
         }));
   }
@@ -97,8 +99,9 @@ class _ListEventScreenState extends State<ListEventScreen> {
     _categorySelected = _categoryList[0];
   }
 
-  Future<List<Event>> getAllEvents(String value) async {
-    var events = await _eventService.readEvents(value);
+  Future<List<Event>> getAllEvents(
+      String search, List<String> categories) async {
+    var events = await _eventService.readEvents(search, categories);
     List<Event> _eventList = <Event>[];
     events.forEach((event) {
       setState(() {
@@ -130,7 +133,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
         .push(MaterialPageRoute(
             builder: (context) => EventInput(creation: false, event: _event)))
         .then((_) {
-      getAllEvents("").then((val) => setState(() {
+      getAllEvents("", []).then((val) => setState(() {
             _events = val;
 
             var _correctDate = DateTime.utc(
@@ -159,7 +162,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                       onPressed: () async {
                         Navigator.pop(context);
                         await _eventService.deleteEvent(id);
-                        getAllEvents("").then((val) => setState(() {
+                        getAllEvents("", []).then((val) => setState(() {
                               _events = val;
 
                               var _correctDate = DateTime.utc(
@@ -194,7 +197,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
                           Navigator.pop(context);
                           await _eventService.deleteEvent(id);
                           Navigator.pop(context);
-                          getAllEvents("").then((val) => setState(() {
+                          getAllEvents("", []).then((val) => setState(() {
                                 _events = val;
 
                                 var _correctDate = DateTime.utc(
@@ -225,7 +228,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
           .push(MaterialPageRoute(
               builder: (context) => EventInput(creation: false, event: _event)))
           .then((_) {
-        getAllEvents("").then((val) => setState(() {
+        getAllEvents("", []).then((val) => setState(() {
               _events = val;
 
               var _correctDate = DateTime.utc(
@@ -269,7 +272,7 @@ class _ListEventScreenState extends State<ListEventScreen> {
   }
 
   void updateList(String value) {
-    getAllEvents(value).then((val) => setState(() {
+    getAllEvents(value, []).then((val) => setState(() {
           _events = val;
         }));
   }
@@ -327,7 +330,10 @@ class _ListEventScreenState extends State<ListEventScreen> {
                                   borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20))),
                               builder: (BuildContext context) {
-                                return FilterList();
+                                return FilterList(
+                                    categories: _categoryListSelected,
+                                    onCategorySelectionChanged:
+                                        _updateSelectedCategories);
                               },
                             )
                           }),
@@ -526,65 +532,6 @@ class _ListEventScreenState extends State<ListEventScreen> {
           )),
     );
   }
-
-  // Widget filterList() {
-  //   return SingleChildScrollView(
-  //     child: Container(
-  //       color: Theme.of(context).primaryColorDark,
-  //       //height: MediaQuery.of(context).size.height * 0.6,
-  //       padding: EdgeInsets.all(30),
-  //       width: MediaQuery.of(context).size.width * 1,
-  //       child: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         mainAxisAlignment: MainAxisAlignment.start,
-  //         children: <Widget>[
-  //           Row(
-  //             children: [
-  //               Expanded(
-  //                 child: Text(
-  //                   "Set Filters",
-  //                   textAlign: TextAlign.center,
-  //                   style: TextStyle(
-  //                     fontSize: 25,
-  //                     fontFamily: 'BalooBhai',
-  //                     color: Theme.of(context).primaryColorLight,
-  //                   ),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //           SizedBox(height: 30),
-  //           Row(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Expanded(
-  //                 child: Text(
-  //                   "Category",
-  //                   style: TextStyle(
-  //                     fontSize: 20,
-  //                     fontFamily: 'BalooBhai',
-  //                     color: Theme.of(context).primaryColorLight,
-  //                   ),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //           ChipsChoice<String>.multiple(
-  //               value: _categoryListSelected,
-  //               onChanged: (val) => setState(() => _categoryListSelected = val),
-  //               choiceLoader: getCategory,
-  //               wrapped: true,
-  //               choiceStyle: C2ChipStyle.filled(
-  //                 selectedStyle: const C2ChipStyle(
-  //                   backgroundColor: Color.fromARGB(255, 116, 206, 210),
-  //                 ),
-  //               )),
-  //           SizedBox(height: 50),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget bottomSheet(event) {
     return SingleChildScrollView(
